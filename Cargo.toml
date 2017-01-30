@@ -1,0 +1,22 @@
+[package]
+name = "prosolo"
+version = "0.0.1"
+authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
+
+[dependencies]
+libprosic = "0.1.*"
+clap = {version = "2.10.*", features = ["yaml", "color", "suggestions"]}
+rust-htslib = "0.9.*"
+bio = "0.10.*"
+log = "0.3.*"
+fern = "0.3.*"
+csv = "0.14.*"
+itertools = "0.4.*"
+time = "*"
+rustc-serialize = "0.3.*"
+flame = { version = "^0.1.2", optional = true }
+flamer = { version = "^0.1.2", optional = true }
+
+[features]
+default = []
+flame_it = ["flame", "flamer", "libprosic/flame_it"]

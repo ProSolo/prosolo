@@ -1,0 +1,207 @@
+name: prosolo
+author: David Laehnemann <david.laehnemann@hhu.de>, Johannes Köster <johannes.koester@tu-dortmund.de>, Louis Dijkstra
+about: "A caller for somatic variants in single cell-bulk sample pairs."
+
+settings:
+    - SubcommandRequired
+
+global_settings:
+    - ColoredHelp
+
+args:
+  - verbose:
+      short: v
+      help: Provide verbose output.
+
+subcommands:
+  - single-cell-bulk:
+      about: Call somatic and germline variants from a single cell-bulk sample pair and a VCF/BCF with candidate variants.
+      args:
+        - single-cell:
+            required: true
+            help: BAM file with reads from single cell sample.
+        - bulk:
+            required: true
+            help: BAM file with reads from bulk sample.
+        - candidates:
+            long: candidates
+            short: c
+            value_name: FILE
+            help: VCF/BCF file to process (if omitted, read from STDIN).
+        - output:
+            long: output
+            short: o
+            value_name: FILE
+            help: BCF file that shall contain the results (if omitted, write to STDOUT).
+        - single-cell-insert-size-mean:
+            long: normal-isize-mean
+            value_name: FLOAT
+            help: Mean of single cell sample insert size.
+        - single-cell-insert-size-sd:
+            long: normal-isize-sd
+            value_name: FLOAT
+            help: Standard deviation of single cell sample insert size.
+        - bulk-insert-size-mean:
+            long: isize-mean
+            short: m
+            value_name: FLOAT
+            required: true
+            help: Mean of bulk sample insert size (if it differs from single cell).
+        - bulk-insert-size-sd:
+            long: isize-sd
+            short: s
+            required: true
+            value_name: FLOAT
+            help: Standard deviation of bulk sample insert size (if it differs from single cell).
+        - effective-mutation-rate:
+            long: effmut
+            value_name: FLOAT
+            help: Effective SNV mutation rate of bulk sample (should be estimated from somatic SNVs, ignored if --flat-priors).
+        - deletion-factor:
+            long: deletion-factor
+            short: d
+            value_name: FLOAT
+            help: Factor of deletion mutation rate relative to SNV mutation rate [0.03 according to Hodkinson et al. Nature Reviews Genetics 2011].
+        - insertion-factor:
+            long: insertion-factor
+            short: i
+            value_name: FLOAT
+            help: Factor of insertion mutation rate relative to SNV mutation rate [0.01 according to Hodkinson et al. Nature Reviews Genetics 2011].
+        - ploidy:
+            long: ploidy
+            short: p
+            value_name: INT
+            help: General ploidy of sampled individual [2].
+        - purity:
+            long: purity
+            short: a
+            value_name: FLOAT
+            help: Purity of tumor sample [1.0].
+
+        - heterozygosity:
+            long: het
+            value_name: FLOAT
+            help: Expected heterozygosity of bulk sample (ignored if --flat-priors) [1.25E-4].
+        - prob-spurious-isize:
+            long: spurious-isize-rate
+            short: r
+            value_name: FLOAT
+            help: "Rate of wrongly reported insert size abberations (should be set depending on mapper, BWA: 0.01332338, LASER: 0.05922201) [0.0]."
+        - prob-missed-insertion-alignment:
+            long: missed-insertion-rate
+            short: E
+            value_name: FLOAT
+            help: "Rate of missed insertion alignments if insertion is present (should be set depending on mapper, BWA: 0.2138, LASER: 0.3460) [0.0]."
+        - prob-missed-deletion-alignment:
+            long: missed-deletion-rate
+            short: e
+            value_name: FLOAT
+            help: "Rate of missed deletion alignments if deletion is present (should be set depending on mapper, BWA: 0.0310, LASER: 0.0964) [0.0]."
+        - prob-spurious-indel-alignment:
+            long: spurious-indel-rate
+            short: y
+            value_name: FLOAT
+            help: "Rate of spurious indel alignments if indel is absent (should be set depending on mapper, BWA: 0.00001, LASER: 0.00001) [0.0]."
+        - min-somatic-af:
+            long: min-somatic-af
+            value_name: FLOAT
+            help: Infimum of allele frequency for somatic mutation [0.0].
+        - pileup-window:
+            long: pileup-window
+            value_name: INT
+            help: Window to investigate for evidence left and right of each variant [2500].
+        - omit-snvs:
+            long: omit-snvs
+            help: Don't call SNVs.
+        - omit-indels:
+            long: omit-indels
+            help: Don't call indels.
+        - omit-fragment-evidence:
+            long: omit-fragment-evidence
+            help: Omit evidence consisting of read pairs with unexpected insert size (insert size parameters will be ignored).
+        - omit-secondary-alignments:
+            long: omit-secondary-alignments
+            help: Omit secondary alignments.
+        - omit-mapq:
+            long: omit-mapq
+            help: Omit mapping quality (all alignments are trusted).
+        - observations:
+            long: obs
+            value_name: FILE
+            help: Optional path where read observations shall be written to. The resulting file contains a line for each observation with tab-separated values.
+        - flat-priors:
+            long: flat-priors
+            help: Ignore the prior model and use flat priors instead.
+        - max-indel-dist:
+            long: max-indel-dist
+            value_name: INT
+            help: Maximum distance of indel in read to candidate indel in order to be considered a match.
+        - max-indel-len-diff:
+            long: max-indel-len-diff
+            value_name: INT
+            help: Maximum absolute difference of indel lenght in read to candidate indel in order to be considered a match.
+        - max-indel-len:
+            long: max-indel-len
+            value_name: INT
+            help: Omit longer indels when calling [1000].
+  - estimate-mutation-rate:
+      about: Estimate the effective mutation rate of a tumor sample from a VCF/BCF with candidate variants from STDIN.
+      args:
+        - min-af:
+            long: min-af
+            short: f
+            value_name: FLOAT
+            help: Minimum allele frequency to consider [0.12].
+        - max-af:
+            long: max-af
+            short: F
+            value_name: FLOAT
+            help: Maximum allele frequency to consider [0.25].
+        - fit:
+            long: fit
+            value_name: FILE
+            help: Path to file that will contain observations and the parameters of the fitted model as JSON.
+  - estimate-fdr:
+      about: Estimate the expected false discovery rate for mutation events. Prints an annotated BCF to STDOUT.
+      args:
+        - calls:
+            required: true
+            help: Calls as provided by prosolo single-cell-bulk.
+        - event:
+            long: event
+            short: e
+            value_name: STRING
+            multiple: true
+            help: Event to consider. Multiple allowed.
+        - output:
+            long: output
+            short: o
+            value_name: FILE
+            help: BCF file that shall contain the results (if omitted, write to STDOUT).
+  - control-fdr:
+      about: Print thresholds for controlling the FDR at different levels.
+      args:
+        - calls:
+            required: true
+            help: Calls as provided by prosolo single-cell-bulk.
+        - null-calls:
+            required: true
+            help: Null model calls as provided by prosolo single-cell-bulk, e.g. when flipping single cell and bulk sample.
+        - event:
+            long: event
+            short: e
+            value_name: STRING
+            help: Event to consider.
+        - vartype:
+            long: var
+            value_name: STRING
+            required: true
+            help: Variant type to consider (SNV, INS, DEL).
+        - min-len:
+            long: min-len
+            value_name: INT
+            help: Minimum indel length to consider.
+        - max-len:
+            long: max-len
+            value_name: INT
+            help: Maximum indel length to consider (exclusive).
