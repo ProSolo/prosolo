@@ -87,37 +87,37 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         libprosic::call::pairwise::PairEvent {
             name: "germline_hom_ref".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: AlleleFreq(0.0)..min_het_af
-        },
-        libprosic::call::pairwise::PairEvent {
-            name: "germline_het".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
-            af_control: min_het_af..max_het_af
-        },
-        libprosic::call::pairwise::PairEvent {
-            name: "germline_hom_alt".to_owned(),
-            af_case: vec![AlleleFreq(1.0)],
-            af_control: max_het_af..AlleleFreq(1.0)
+            af_control: AlleleFreq(0.0)..AlleleFreq(0.5)
         },
         libprosic::call::pairwise::PairEvent {
             name: "somatic_hom_ref".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: min_het_af..AlleleFreq(1.0)
-        },
-        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
-            name: "somatic_het_from_ref".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
-            af_control: AlleleFreq(0.0)..min_het_af
-        },
-        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
-            name: "somatic_het_from_alt".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
-            af_control: max_het_af..AlleleFreq(1.0)
+            af_control: AlleleFreq(0.5)..AlleleFreq(1.0)
         },
         libprosic::call::pairwise::PairEvent {
             name: "somatic_hom_alt".to_owned(),
             af_case: vec![AlleleFreq(1.0)],
-            af_control: AlleleFreq(0.0)..max_het_af
+            af_control: AlleleFreq(0.0)..AlleleFreq(0.5)
+        },
+        libprosic::call::pairwise::PairEvent {
+            name: "germline_hom_alt".to_owned(),
+            af_case: vec![AlleleFreq(1.0)],
+            af_control: AlleleFreq(0.5)..AlleleFreq(1.0)
+        },
+        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
+            name: "somatic_het_from_ref".to_owned(),
+            af_case: vec![AlleleFreq(0.5)],
+            af_control: AlleleFreq(0.0)..AlleleFreq(0.25)
+        },
+        libprosic::call::pairwise::PairEvent {
+            name: "germline_het".to_owned(),
+            af_case: vec![AlleleFreq(0.5)],
+            af_control: AlleleFreq(0.25)..AlleleFreq(0.75)
+        },
+        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
+            name: "somatic_het_from_alt".to_owned(),
+            af_case: vec![AlleleFreq(0.5)],
+            af_control: AlleleFreq(0.75)..AlleleFreq(1.0)
         }
     ];
     // call absent variants as the complement of the other events
