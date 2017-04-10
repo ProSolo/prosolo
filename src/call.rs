@@ -22,19 +22,19 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let no_fragment_evidence = matches.is_present("omit-fragment-evidence");
     let no_secondary = matches.is_present("omit-secondary-alignments");
     let no_mapq = matches.is_present("omit-mapq");
+    let adjust_mapq = matches.is_present("adjust-mapq");
     let omit_snvs = matches.is_present("omit-snvs");
     let omit_indels = matches.is_present("omit-indels");
     let single = matches.value_of("single").unwrap();
     let bulk = matches.value_of("bulk").unwrap();
     let candidates = matches.value_of("candidates").unwrap_or("-");
     let output = matches.value_of("output").unwrap_or("-");
+    let reference = matches.value_of("reference").unwrap();
     let observations = matches.value_of("observations");
     let flat_priors = matches.is_present("flat-priors");
+    let exclusive_end = matches.is_present("exclusive-end");
 
     let prob_spurious_isize = try!(Prob::checked(value_t!(matches, "prob-spurious-isize", f64).unwrap_or(0.0)));
-    let prob_missed_insertion_alignment = try!(Prob::checked(value_t!(matches, "prob-missed-insertion-alignment", f64).unwrap_or(0.0)));
-    let prob_missed_deletion_alignment = try!(Prob::checked(value_t!(matches, "prob-missed-deletion-alignment", f64).unwrap_or(0.0)));
-    let prob_spurious_indel_alignment = try!(Prob::checked(value_t!(matches, "prob-spurious-indel-alignment", f64).unwrap_or(0.0)));
 
     let max_indel_dist = value_t!(matches, "max-indel-dist", u32).unwrap_or(50);
     let max_indel_len_diff = value_t!(matches, "max-indel-len-diff", u32).unwrap_or(20);
@@ -53,15 +53,13 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_fragment_evidence,
         !no_secondary,
         !no_mapq,
+        adjust_mapq,
         libprosic::InsertSize {
             mean: bulk_mean_insert_size,
             sd: bulk_sd_insert_size
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_spurious_isize,
-        prob_missed_insertion_alignment,
-        prob_missed_deletion_alignment,
-        prob_spurious_indel_alignment
+        prob_spurious_isize
     ).max_indel_dist(max_indel_dist).max_indel_len_diff(max_indel_len_diff);
 
     // init single sample
@@ -71,15 +69,13 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_fragment_evidence,
         !no_secondary,
         !no_mapq,
+        adjust_mapq,
         libprosic::InsertSize {
             mean: single_mean_insert_size,
             sd: single_sd_insert_size
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_spurious_isize,
-        prob_missed_insertion_alignment,
-        prob_missed_deletion_alignment,
-        prob_spurious_indel_alignment
+        prob_spurious_isize
     ).max_indel_dist(max_indel_dist).max_indel_len_diff(max_indel_len_diff);
 
     // setup events: case = single cell; control = bulk
@@ -126,7 +122,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let prior_model = libprosic::priors::SingleCellBulkModel::new(ploidy);
 
     // init joint model
-    let mut joint_model = libprosic::model::PairModel::new(
+    let mut joint_model = libprosic::model::PairCaller::new(
         single_sample,
         bulk_sample,
         prior_model
@@ -135,20 +131,22 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     // perform calling
     libprosic::call::pairwise::call::<
         _, _, _,
-        libprosic::model::PairModel<
-            libprosic::model::ContinuousAlleleFreqs,
+        libprosic::model::PairCaller<
             libprosic::model::DiscreteAlleleFreqs,
+            libprosic::model::ContinuousAlleleFreqs,
             libprosic::model::priors::SingleCellBulkModel
-        >, _, _, _>
+        >, _, _, _, _>
     (
         &candidates,
         &output,
+        &reference,
         &events,
         Some(&absent_event),
         &mut joint_model,
         omit_snvs,
         omit_indels,
         Some(max_indel_len),
-        observations.as_ref()
+        observations.as_ref(),
+        exclusive_end
     )
 }
