@@ -1,0 +1,52 @@
+#		nucleotide		bulk freq		SC freq					
+#CHR	POS	ref	alt	ref	alt	ref	alt	SC genotype	SC status	amplif error 	ADO
+ref	10	G	--	100	0	10	0	hom ref	germ		
+ref	25	C	G	90	10	45	5	hom ref	germ		
+ref	40	A	T	100	0	8	2	hom ref	germ	Y	
+ref	55	A	G	100	0	40	10	hom ref	germ	Y	
+ref	70	A	T	100	0	3	7	hom ref	germ	Y	Y
+ref	85	A	C	100	0	5	45	hom ref	germ	Y	Y
+ref	100	A	G	60	40	10	0	hom ref	som		
+ref	115	A	C	60	40	50	0	hom ref	som		
+ref	130	A	T	60	40	6	4	hom ref	som	Y	
+ref	145	G	C	60	40	45	5	hom ref	som	Y	
+ref	160	A	G	60	40	0	10	hom ref	som	Y	Y
+ref	175	A	T	60	40	0	50	hom ref	som	Y	Y
+ref	190	G	A	30	70	8	2	hom ref	imp		Y
+ref	205	T	C	30	70	45	5	hom ref	imp		Y
+ref	220	T	A	80	20	0	10	hom alt	imp		Y
+ref	235	A	G	80	20	5	45	hom alt	imp		Y
+ref	250	A	C	30	70	10	0	hom alt	som	Y	Y
+ref	265	T	G	30	70	50	0	hom alt	som	Y	Y
+ref	280	C	A	30	70	1	9	hom alt	som	Y	
+ref	295	T	G	30	70	10	40	hom alt	som	Y	
+ref	310	T	A	30	70	0	10	hom alt	som		
+ref	325	T	C	30	70	5	45	hom alt	som		
+ref	340	A	T	10	90	10	0	hom alt	germ	Y	Y
+ref	355	T	G	10	90	50	0	hom alt	germ	Y	Y
+ref	370	A	C	10	90	0	10	hom alt	germ	Y	
+ref	385	A	G	10	90	5	45	hom alt	germ	Y	
+ref	400	A	T	10	90	2	8	hom alt	germ		
+ref	415	G	C	10	90	0	50	hom alt	germ		
+ref	430	C	T	100	0	5	5	het	imp	Y	
+ref	445	G	A	100	0	35	15	het	imp	Y	
+ref	460	A	C	80	20	10	0	het	som		Y
+ref	475	G	T	80	20	50	0	het	som		Y
+ref	490	A	G	80	20	3	7	het	som		
+ref	505	A	T	80	20	30	20	het	som		
+ref	520	G	A	80	20	0	10	het	som		Y
+ref	535	G	C	80	20	0	50	het	som		Y
+ref	550	C	A	50	50	10	0	het	germ		Y
+ref	565	A	G	50	50	50	0	het	germ		Y
+ref	580	A	C	50	50	5	5	het	germ		
+ref	595	G	T	50	50	25	25	het	germ		
+ref	610	T	A	50	50	0	10	het	germ		Y
+ref	625	G	C	50	50	0	50	het	germ		Y
+ref	640	T	A	20	80	10	0	het	som		Y
+ref	655	C	G	20	80	50	0	het	som		Y
+ref	670	C	T	20	80	6	4	het	som		
+ref	685	C	A	20	80	15	15	het	som		
+ref	700	C	T	20	80	0	10	het	som		Y
+ref	715	A	G	20	80	0	50	het	som		Y
+ref	730	G	T	0	100	6	4	het	imp	Y	
+ref	745	G	C	0	100	10	20	het	imp	Y	
