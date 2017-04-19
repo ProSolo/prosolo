@@ -1,0 +1,20 @@
+name: prosolo-test-sim
+channels:
+- bioconda
+- r
+- defaults
+- conda-forge
+dependencies:
+- art=2016.06.05=gsl1.16_0
+- bwa=0.7.15=1
+- samtools=1.4=0
+- blas=1.1=openblas
+- gsl=1.16=0
+- curl=7.52.1=0
+- libgcc=5.2.0=0
+- libgfortran=3.0.0=1
+- openblas=0.2.19=0
+- openssl=1.0.2k=1
+- xz=5.2.2=1
+- zlib=1.2.8=3
+prefix: /home/dlaehnemann/installs/miniconda3/envs/prosolo-test-sim
