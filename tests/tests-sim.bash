@@ -101,3 +101,5 @@ samtools mpileup -A -Q 0 -f ref.fa -l pos.tsv single-cell.bam | awk 'BEGIN { OFS
 samtools mpileup -A -Q 0 -l pos.tsv single-cell.bam | awk 'BEGIN { OFS="\t" } { print $1,$2,$5 }' | sed -r -e 's/\$|\^[^ ]//g' | awk 'BEGIN { OFS="\t" } { print $1,$2,split($3,A,/[Aa]/)-1,split($3,C,/[Cc]/)-1,split($3,G,/[Gg]/)-1,split($3,T,/[Tt]/)-1 }' >single-cell.nt-cov.tsv
 samtools mpileup -A -Q 0 -f ref.fa -l pos.tsv bulk.bam | awk 'BEGIN { OFS="\t" } { print $1,$2,$5 }' | sed -r -e 's/\$|\^[^ ]//g' | awk 'BEGIN { OFS="\t" } { print $1,$2,split($3,ref,/[,.]/)-1,split($3,alt,/[^,.]/)-1 }' >bulk.alt-ref-cov.tsv
 samtools mpileup -A -Q 0 -l pos.tsv bulk.bam | awk 'BEGIN { OFS="\t" } { print $1,$2,$5 }' | sed -r -e 's/\$|\^[^ ]//g' | awk 'BEGIN { OFS="\t" } { print $1,$2,split($3,A,/[Aa]/)-1,split($3,C,/[Cc]/)-1,split($3,G,/[Gg]/)-1,split($3,T,/[Tt]/)-1 }' >bulk.nt-cov.tsv
+
+samtools mpileup -f ref.fa -l pos.tsv -Q 0 --BCF -o candidates.bcf bulk.bam single-cell.bam
