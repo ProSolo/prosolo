@@ -8,8 +8,8 @@ use bio::stats::Prob;
 
 pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     // read command line parameters
-    let single_mean_insert_size = value_t!(matches, "single-insert-size-mean", f64).unwrap();
-    let single_sd_insert_size = value_t!(matches, "single-insert-size-sd", f64).unwrap();
+    let single_mean_insert_size = value_t!(matches, "single-cell-insert-size-mean", f64).unwrap();
+    let single_sd_insert_size = value_t!(matches, "single-cell-insert-size-sd", f64).unwrap();
     let bulk_mean_insert_size = value_t!(matches, "bulk-insert-size-mean", f64).unwrap_or(single_mean_insert_size);
     let bulk_sd_insert_size = value_t!(matches, "bulk-insert-size-sd", f64).unwrap_or(single_sd_insert_size);
     let bulk_heterozygosity = try!(Prob::checked(value_t!(matches, "heterozygosity", f64).unwrap_or(1.25E-4)));
@@ -25,7 +25,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let adjust_mapq = matches.is_present("adjust-mapq");
     let omit_snvs = matches.is_present("omit-snvs");
     let omit_indels = matches.is_present("omit-indels");
-    let single = matches.value_of("single").unwrap();
+    let single = matches.value_of("single-cell").unwrap();
     let bulk = matches.value_of("bulk").unwrap();
     let candidates = matches.value_of("candidates").unwrap_or("-");
     let output = matches.value_of("output").unwrap_or("-");

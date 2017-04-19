@@ -37,23 +37,23 @@ subcommands:
             value_name: FILE
             help: BCF file that shall contain the results (if omitted, write to STDOUT).
         - single-cell-insert-size-mean:
-            long: normal-isize-mean
+            long: sc-isize-mean
+            required: true
+            short: m
             value_name: FLOAT
             help: Mean of single cell sample insert size.
         - single-cell-insert-size-sd:
-            long: normal-isize-sd
+            long: sc-isize-sd
+            short: s
+            required: true
             value_name: FLOAT
             help: Standard deviation of single cell sample insert size.
         - bulk-insert-size-mean:
-            long: isize-mean
-            short: m
+            long: b-isize-mean
             value_name: FLOAT
-            required: true
             help: Mean of bulk sample insert size (if it differs from single cell).
         - bulk-insert-size-sd:
-            long: isize-sd
-            short: s
-            required: true
+            long: b-isize-sd
             value_name: FLOAT
             help: Standard deviation of bulk sample insert size (if it differs from single cell).
         - effective-mutation-rate:
