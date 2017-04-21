@@ -56,20 +56,20 @@ subcommands:
             long: b-isize-sd
             value_name: FLOAT
             help: Standard deviation of bulk sample insert size (if it differs from single cell).
-        - effective-mutation-rate:
-            long: effmut
-            value_name: FLOAT
-            help: Effective SNV mutation rate of bulk sample (should be estimated from somatic SNVs, ignored if --flat-priors).
-        - deletion-factor:
-            long: deletion-factor
-            short: d
-            value_name: FLOAT
-            help: Factor of deletion mutation rate relative to SNV mutation rate [0.03 according to Hodkinson et al. Nature Reviews Genetics 2011].
-        - insertion-factor:
-            long: insertion-factor
-            short: i
-            value_name: FLOAT
-            help: Factor of insertion mutation rate relative to SNV mutation rate [0.01 according to Hodkinson et al. Nature Reviews Genetics 2011].
+#        - effective-mutation-rate:
+#            long: effmut
+#            value_name: FLOAT
+#            help: Effective SNV mutation rate of bulk sample (should be estimated from somatic SNVs, ignored if --flat-priors).
+#        - deletion-factor:
+#            long: deletion-factor
+#            short: d
+#            value_name: FLOAT
+#            help: Factor of deletion mutation rate relative to SNV mutation rate [0.03 according to Hodkinson et al. Nature Reviews Genetics 2011].
+#        - insertion-factor:
+#            long: insertion-factor
+#            short: i
+#            value_name: FLOAT
+#            help: Factor of insertion mutation rate relative to SNV mutation rate [0.01 according to Hodkinson et al. Nature Reviews Genetics 2011].
         - ploidy:
             long: ploidy
             short: p
@@ -80,10 +80,10 @@ subcommands:
             short: a
             value_name: FLOAT
             help: Purity of tumor sample [1.0].
-        - heterozygosity:
-            long: het
-            value_name: FLOAT
-            help: Expected heterozygosity of bulk sample (ignored if --flat-priors) [1.25E-4].
+#        - heterozygosity:
+#            long: het
+#            value_name: FLOAT
+#            help: Expected heterozygosity of bulk sample (ignored if --flat-priors) [1.25E-4].
         - adjust-mapq:
             long: adjust-mapq
             help: Downgrade mapping quality of alignments supporting an indel if there are no fragments supporting the same indel. Such cases are more likely to be alignment/repeat artifacts.
@@ -92,10 +92,10 @@ subcommands:
             short: r
             value_name: FLOAT
             help: "Rate of wrongly reported insert size abberations (should be set depending on mapper, BWA: 0.01332338, LASER: 0.05922201) [0.0]."
-        - min-somatic-af:
-            long: min-somatic-af
-            value_name: FLOAT
-            help: Infimum of allele frequency for somatic mutation [0.0].
+#        - min-somatic-af:
+#            long: min-somatic-af
+#            value_name: FLOAT
+#            help: Infimum of allele frequency for somatic mutation [0.0].
         - pileup-window:
             long: pileup-window
             value_name: INT
@@ -119,9 +119,9 @@ subcommands:
             long: obs
             value_name: FILE
             help: Optional path where read observations shall be written to. The resulting file contains a line for each observation with tab-separated values.
-        - flat-priors:
-            long: flat-priors
-            help: Ignore the prior model and use flat priors instead.
+#        - flat-priors:
+#            long: flat-priors
+#            help: Ignore the prior model and use flat priors instead.
         - max-indel-dist:
             long: max-indel-dist
             value_name: INT

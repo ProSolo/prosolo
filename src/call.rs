@@ -12,12 +12,12 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let single_sd_insert_size = value_t!(matches, "single-cell-insert-size-sd", f64).unwrap();
     let bulk_mean_insert_size = value_t!(matches, "bulk-insert-size-mean", f64).unwrap_or(single_mean_insert_size);
     let bulk_sd_insert_size = value_t!(matches, "bulk-insert-size-sd", f64).unwrap_or(single_sd_insert_size);
-    let bulk_heterozygosity = try!(Prob::checked(value_t!(matches, "heterozygosity", f64).unwrap_or(1.25E-4)));
+//    let bulk_heterozygosity = try!(Prob::checked(value_t!(matches, "heterozygosity", f64).unwrap_or(1.25E-4)));
     let ploidy = value_t!(matches, "ploidy", u32).unwrap_or(2);
-    let bulk_effective_mutation_rate = value_t!(matches, "effective-mutation-rate", f64).unwrap_or(2000.0);
-    let deletion_factor = value_t!(matches, "deletion-factor", f64).unwrap_or(0.03);
-    let insertion_factor = value_t!(matches, "insertion-factor", f64).unwrap_or(0.01);
-    let min_somatic_af = value_t!(matches, "min-somatic-af", f64).map(|af| AlleleFreq(af)).unwrap_or(AlleleFreq(0.05));
+//    let bulk_effective_mutation_rate = value_t!(matches, "effective-mutation-rate", f64).unwrap_or(2000.0);
+//    let deletion_factor = value_t!(matches, "deletion-factor", f64).unwrap_or(0.03);
+//    let insertion_factor = value_t!(matches, "insertion-factor", f64).unwrap_or(0.01);
+//    let min_somatic_af = value_t!(matches, "min-somatic-af", f64).map(|af| AlleleFreq(af)).unwrap_or(AlleleFreq(0.05));
     let pileup_window = value_t!(matches, "pileup-window", u32).unwrap_or(2500);
     let no_fragment_evidence = matches.is_present("omit-fragment-evidence");
     let no_secondary = matches.is_present("omit-secondary-alignments");
@@ -31,7 +31,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let output = matches.value_of("output").unwrap_or("-");
     let reference = matches.value_of("reference").unwrap();
     let observations = matches.value_of("observations");
-    let flat_priors = matches.is_present("flat-priors");
+//    let flat_priors = matches.is_present("flat-priors");
     let exclusive_end = matches.is_present("exclusive-end");
 
     let prob_spurious_isize = try!(Prob::checked(value_t!(matches, "prob-spurious-isize", f64).unwrap_or(0.0)));
@@ -42,9 +42,11 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
 
     let single_bam = try!(bam::IndexedReader::new(&single));
     let bulk_bam = try!(bam::IndexedReader::new(&bulk));
+/*
     let genome_size = (0..bulk_bam.header.target_count()).fold(0, |s, tid| {
         s + bulk_bam.header.target_len(tid).unwrap() as u64
     });
+*/
 
     // init bulk sample
     let bulk_sample = libprosic::Sample::new(
