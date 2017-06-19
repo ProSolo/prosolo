@@ -4,7 +4,7 @@ ref	10	G	--	125	0	15	0	hom ref	germ
 ref	25	C	G	105	15	63	2	hom ref	germ		
 ref	40	A	T	101	0	15	3	hom ref	germ	Y	
 ref	55	A	G	96	0	43	11	hom ref	germ	Y	
-ref	70	A	T	99	1	3	7	hom ref	germ	Y	Y
+ref	70	A	T	99	0	3	7	hom ref	germ	Y	Y
 ref	85	A	C	90	0	10	42	hom ref	germ	Y	Y
 ref	100	A	G	75	37	11	0	hom ref	som		
 ref	115	A	C	81	35	54	0	hom ref	som		
@@ -21,7 +21,7 @@ ref	265	T	G	40	46	54	0	hom alt	som	Y	Y
 ref	280	C	A	32	91	0	14	hom alt	som	!	
 ref	295	T	G	11	69	16	49	hom alt	!germ	Y	
 ref	310	T	A	51	67	0	7	hom alt	som		
-ref	325	T	C	26	72	3	50	hom alt	som		
+ref	325	T	C	26	72	3	49	hom alt	som		
 ref	340	A	T	15	88	17	0	hom alt	germ	Y	Y
 ref	355	T	G	8	81	56	0	hom alt	germ	Y	Y
 ref	370	A	C	11	91	0	6	hom alt	germ	!	
