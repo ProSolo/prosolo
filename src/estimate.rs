@@ -81,8 +81,8 @@ pub fn fdr_bh(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         }
     };
 
-    let mut call_reader = try!(bcf::Reader::new(&call_bcf));
-    let mut null_reader = try!(bcf::Reader::new(&null_bcf));
+    let mut call_reader = try!(bcf::Reader::from_path(&call_bcf));
+    let mut null_reader = try!(bcf::Reader::from_path(&null_bcf));
     let mut writer = io::stdout();
     let event = DummyEvent { name: event.to_owned() };
 

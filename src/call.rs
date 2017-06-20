@@ -46,8 +46,8 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let max_indel_len_diff = value_t!(matches, "max-indel-len-diff", u32).unwrap_or(20);
     let max_indel_len = value_t!(matches, "max-indel-len", u32).unwrap_or(1000);
 
-    let single_bam = try!(bam::IndexedReader::new(&single));
-    let bulk_bam = try!(bam::IndexedReader::new(&bulk));
+    let single_bam = bam::IndexedReader::from_path(&single)?;
+    let bulk_bam = bam::IndexedReader::from_path(&bulk)?;
 /*
     let genome_size = (0..bulk_bam.header.target_count()).fold(0, |s, tid| {
         s + bulk_bam.header.target_len(tid).unwrap() as u64
