@@ -8,7 +8,8 @@ authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 libprosic = { git  = "https://github.com/PROSIC/libprosic/" }
 clap = {version = "2.10.*", features = ["yaml", "color", "suggestions"]}
 rust-htslib = "0.12.*"
-bio = "0.10.*"
+#bio = "0.13.*"
+bio = { git  = "https://github.com/rust-bio/rust-bio/" }
 log = "0.3.*"
 fern = "0.3.*"
 csv = "0.14.*"
