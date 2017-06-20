@@ -6,7 +6,6 @@ use std::fs::File;
 use rustc_serialize::json;
 use clap;
 use csv;
-use itertools::Itertools;
 use rust_htslib::bcf;
 
 use libprosic;
@@ -79,7 +78,7 @@ pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let event = DummyEvent { name: event.to_owned() };
     let mut writer = io::stdout();
     let mut call_reader = try!(bcf::Reader::from_path(&call_bcf));
-    
+
     if method == "bh" {
         let null_bcf = matches.value_of("null-calls").unwrap();
         let mut null_reader = try!(bcf::Reader::from_path(&null_bcf));
