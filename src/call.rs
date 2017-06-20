@@ -109,57 +109,37 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     // setup events: case = single cell; control = bulk
     let events = [
         libprosic::call::pairwise::PairEvent {
-            name: "germline_hom_ref".to_owned(),
+            name: "hom_ref".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.25 )
+            af_control: ContinuousAlleleFreqs::right_exclusive( 0.0..0.5 )
         },
         libprosic::call::pairwise::PairEvent {
-            name: "somatic_hom_ref".to_owned(),
+            name: "ADO_to_ref".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: ContinuousAlleleFreqs::exclusive( 0.25..0.5 )
+            af_control: ContinuousAlleleFreqs::inclusive( 0.5..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
-            name: "alt_allele_dropout".to_owned(),
-            af_case: vec![AlleleFreq(0.0)],
-            af_control: ContinuousAlleleFreqs::left_exclusive( 0.5..1.0 )
-        },
-        libprosic::call::pairwise::PairEvent {
-            name: "ref_allele_dropout".to_owned(),
+            name: "ADO_to_alt".to_owned(),
             af_case: vec![AlleleFreq(1.0)],
             af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.5 )
         },
         libprosic::call::pairwise::PairEvent {
-            name: "somatic_hom_alt".to_owned(),
+            name: "hom_alt".to_owned(),
             af_case: vec![AlleleFreq(1.0)],
-            af_control: ContinuousAlleleFreqs::left_exclusive( 0.5..0.75 )
+            af_control: ContinuousAlleleFreqs::left_exclusive( 0.5..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
-            name: "germline_hom_alt".to_owned(),
-            af_case: vec![AlleleFreq(1.0)],
-            af_control: ContinuousAlleleFreqs::left_exclusive( 0.75..1.0 )
-        },
-        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
-            name: "amplification_error_to_alt".to_owned(),
+            name: "err_alt".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
             af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.0 )
         },
-        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
-            name: "somatic_het_from_ref".to_owned(),
+        libprosic::call::pairwise::PairEvent {
+            name: "het".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
-            af_control: ContinuousAlleleFreqs::left_exclusive( 0.0..0.25 )
+            af_control: ContinuousAlleleFreqs::exclusive( 0.0..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
-            name: "germline_het".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
-            af_control: ContinuousAlleleFreqs::left_exclusive( 0.25..0.75 )
-        },
-        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
-            name: "somatic_het_from_alt".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
-            af_control: ContinuousAlleleFreqs::exclusive( 0.75..1.0 )
-        },
-        libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
-            name: "amplification_error_to_ref".to_owned(),
+            name: "err_ref".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
             af_control: ContinuousAlleleFreqs::inclusive( 1.0..1.0 )
         }
