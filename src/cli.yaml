@@ -80,6 +80,14 @@ subcommands:
             short: a
             value_name: FLOAT
             help: Purity of tumor sample [1.0].
+        - bulk-min-n:
+            long: bulk-min-n
+            value_name: INT
+            help: Minimum number of (theoretical) reads to work with in the bulk background, in case the actual read count for a variant site is lower (in this case, probabilities will be computed for all discrete allele frequencies allowed by the minimum read count provided here). The code will work with a minimum of 2, but for a more even sampling of Event spaces, the default is at [8].
+        - bulk-max-n:
+            long: bulk-max-n
+            value_name: INT
+            help: Maximum number of (theoretical) reads to work with in the bulk background, in case the actual read count for a variant is higher (all read information will be used, but probabilities will only be computed for all discrete allele frequencies allowed by the maximum read count provided here). The code will work with any number above bulk-min-n, but we use the cap of the currently used Lodato amplification bias model for the single cell sample as the default [100].
 #        - heterozygosity:
 #            long: het
 #            value_name: FLOAT

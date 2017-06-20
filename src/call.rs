@@ -20,6 +20,8 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let bulk_sd_insert_size = value_t!(matches, "bulk-insert-size-sd", f64).unwrap_or(single_sd_insert_size);
 //    let bulk_heterozygosity = try!(Prob::checked(value_t!(matches, "heterozygosity", f64).unwrap_or(1.25E-4)));
     let ploidy = value_t!(matches, "ploidy", u32).unwrap_or(2);
+    let n_bulk_min = value_t!(matches, "bulk-min-n", usize).unwrap_or(8);
+    let n_bulk_max = value_t!(matches, "bulk-max-n", usize).unwrap_or(100);
 //    let bulk_effective_mutation_rate = value_t!(matches, "effective-mutation-rate", f64).unwrap_or(2000.0);
 //    let deletion_factor = value_t!(matches, "deletion-factor", f64).unwrap_or(0.03);
 //    let insertion_factor = value_t!(matches, "insertion-factor", f64).unwrap_or(0.01);
@@ -163,15 +165,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         }
     ];
 
-    // TODO: implement the minimal number of points needed to evaluate over bulk ranges, so that each point event is evaluated and at least bulk-points-per-event are evaluated per range event; if there are point events apart from 0.0 and 1.0, every higher number of points can only be a multiple of this
-/*
-    for (i, event) in events.iter().enumerate() {
-    let n = max(
-        (n_bulk_per_event_min as f64 / self.min_event_range).ceil() as usize,
-        self.n_bulk_min);
-*/
-
-    let prior_model = libprosic::priors::SingleCellBulkModel::new(ploidy, n);
+    let prior_model = libprosic::priors::SingleCellBulkModel::new(ploidy, n_bulk_min, n_bulk_max);
 
     // init joint model
     let mut joint_model = libprosic::model::PairCaller::new(
