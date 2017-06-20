@@ -1,11 +1,11 @@
 [package]
 name = "prosolo"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
 #libprosic = "0.3.*"
-libprosic = { git  = "https://github.com/PROSIC/libprosic/" }
+libprosic = { git  = "https://github.com/PROSIC/libprosic/", rev = "057aba04adf7e5d2eda93b1f3fadce3370c9a965"}
 clap = {version = "2.10.*", features = ["yaml", "color", "suggestions"]}
 rust-htslib = "0.12.*"
 #bio = "0.13.*"
