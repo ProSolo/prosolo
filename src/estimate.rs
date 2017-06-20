@@ -48,25 +48,9 @@ impl libprosic::Event for DummyEvent {
 }
 
 
-pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
-    let inbcf = matches.value_of("calls").unwrap();
-    let outbcf = matches.value_of("output").unwrap_or("-");
-    let events = matches.values_of("events").unwrap().map(|e| {
-        DummyEvent { name: e.to_owned() }
-    }).collect_vec();
-
-    try!(estimation::fdr::annotate(&inbcf, &outbcf, &events));
-
-    Ok(())
-}
-
-
-pub fn fdr_bh(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
-    let call_bcf = matches.value_of("calls").unwrap();
-    let null_bcf = matches.value_of("null-calls").unwrap();
-    let event = matches.value_of("event").unwrap();
-    let vartype = matches.value_of("vartype").unwrap();
-    let vartype = match (vartype, value_t!(matches, "min-len", u32).ok(), value_t!(matches, "max-len", u32).ok()) {
+/// Parse `VariantType` from command line arguments.
+pub fn parse_vartype(vartype: &str, min_len: Option<u32>, max_len: Option<u32>) -> Result<model::VariantType, Box<Error>> {
+    Ok(match (vartype, min_len, max_len) {
         ("SNV", _, _) => model::VariantType::SNV,
         ("INS", Some(min_len), Some(max_len)) => model::VariantType::Insertion(Some(min_len..max_len)),
         ("DEL", Some(min_len), Some(max_len)) => model::VariantType::Deletion(Some(min_len..max_len)),
@@ -79,14 +63,31 @@ pub fn fdr_bh(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
                 info: None
             }));
         }
-    };
+    })
+}
 
-    let mut call_reader = try!(bcf::Reader::from_path(&call_bcf));
-    let mut null_reader = try!(bcf::Reader::from_path(&null_bcf));
-    let mut writer = io::stdout();
+
+pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
+    let call_bcf = matches.value_of("calls").unwrap();
+    let event = matches.value_of("event").unwrap();
+    let vartype = matches.value_of("vartype").unwrap();
+    let min_len = value_t!(matches, "min-len", u32).ok();
+    let max_len = value_t!(matches, "max-len", u32).ok();
+    let vartype = parse_vartype(vartype, min_len, max_len)?;
+    let method = matches.value_of("method").unwrap();
+
     let event = DummyEvent { name: event.to_owned() };
+    let mut writer = io::stdout();
+    let mut call_reader = try!(bcf::Reader::from_path(&call_bcf));
+    
+    if method == "bh" {
+        let null_bcf = matches.value_of("null-calls").unwrap();
+        let mut null_reader = try!(bcf::Reader::from_path(&null_bcf));
 
-    try!(estimation::fdr_bh::control_fdr(&mut call_reader, &mut null_reader, &mut writer, &event, &vartype));
+        estimation::fdr::bh::control_fdr(&mut call_reader, &mut null_reader, &mut writer, &event, &vartype)?;
+    } else {
+        estimation::fdr::ev::control_fdr(&mut call_reader, &mut writer, &event, &vartype)?;
+    }
 
     Ok(())
 }

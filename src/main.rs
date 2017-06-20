@@ -65,6 +65,7 @@ fn main() {
         panic!("Failed to initialize logger: {}", e);
     }
 
+
     if let Some(matches) = matches.subcommand_matches("single-cell-bulk") {
         if let Err(e) = call::single_cell_bulk(matches) {
             error!("Error: {}", e);
@@ -75,13 +76,8 @@ fn main() {
             error!("Error: {}", e);
             process::exit(1);
         }
-    } else if let Some(matches) = matches.subcommand_matches("estimate-fdr") {
-        if let Err(e) = estimate::fdr(matches) {
-            error!("Error: {}", e);
-            process::exit(1);
-        }
     } else if let Some(matches) = matches.subcommand_matches("control-fdr") {
-        if let Err(e) = estimate::fdr_bh(matches) {
+        if let Err(e) = estimate::fdr(matches) {
             error!("Error: {}", e);
             process::exit(1);
         }
