@@ -6,6 +6,12 @@ use libprosic::model::AlleleFreq;
 use rust_htslib::bam;
 use bio::stats::Prob;
 
+
+fn path_or_pipe(arg: Option<&str>) -> Option<&str> {
+    arg.map_or(None, |f| if f == "-" { None } else { Some(f) })
+}
+
+
 pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     // read command line parameters
     let single_mean_insert_size = value_t!(matches, "single-cell-insert-size-mean", f64).unwrap();
@@ -27,8 +33,8 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let omit_indels = matches.is_present("omit-indels");
     let single = matches.value_of("single-cell").unwrap();
     let bulk = matches.value_of("bulk").unwrap();
-    let candidates = matches.value_of("candidates").unwrap_or("-");
-    let output = matches.value_of("output").unwrap_or("-");
+    let candidates = path_or_pipe(matches.value_of("candidates"));
+    let output = path_or_pipe(matches.value_of("output"));
     let reference = matches.value_of("reference").unwrap();
     let observations = matches.value_of("observations");
 //    let flat_priors = matches.is_present("flat-priors");
