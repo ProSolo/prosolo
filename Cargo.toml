@@ -4,8 +4,8 @@ version = "0.0.1"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-#libprosic = "0.1.*"
-libprosic = { git  = "https://github.com/PROSIC/libprosic/", branch="single-cell-bulk"}
+#libprosic = "0.3.*"
+libprosic = { git  = "https://github.com/PROSIC/libprosic/" }
 clap = {version = "2.10.*", features = ["yaml", "color", "suggestions"]}
 rust-htslib = "0.12.*"
 bio = "0.10.*"

@@ -2,7 +2,7 @@ use std::error::Error;
 
 use clap;
 use libprosic;
-use libprosic::model::AlleleFreq;
+use libprosic::model::{AlleleFreq, ContinuousAlleleFreqs};
 use rust_htslib::bam;
 use bio::stats::Prob;
 
@@ -39,11 +39,10 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let observations = matches.value_of("observations");
 //    let flat_priors = matches.is_present("flat-priors");
     let exclusive_end = matches.is_present("exclusive-end");
+    let max_indel_overlap = value_t!(matches, "max-indel-overlap", u32).unwrap_or(25);
 
     let prob_spurious_isize = try!(Prob::checked(value_t!(matches, "prob-spurious-isize", f64).unwrap_or(0.0)));
 
-    let max_indel_dist = value_t!(matches, "max-indel-dist", u32).unwrap_or(50);
-    let max_indel_len_diff = value_t!(matches, "max-indel-len-diff", u32).unwrap_or(20);
     let max_indel_len = value_t!(matches, "max-indel-len", u32).unwrap_or(1000);
 
     let single_bam = bam::IndexedReader::from_path(&single)?;
@@ -67,8 +66,9 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
             sd: bulk_sd_insert_size
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_spurious_isize
-    ).max_indel_dist(max_indel_dist).max_indel_len_diff(max_indel_len_diff);
+        prob_spurious_isize,
+        max_indel_overlap
+    );
 
     // init single sample
     let single_sample = libprosic::Sample::new(
@@ -83,71 +83,80 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
             sd: single_sd_insert_size
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_spurious_isize
-    ).max_indel_dist(max_indel_dist).max_indel_len_diff(max_indel_len_diff);
+        prob_spurious_isize,
+        max_indel_overlap
+    );
 
     // setup events: case = single cell; control = bulk
     let events = [
         libprosic::call::pairwise::PairEvent {
             name: "germline_hom_ref".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: AlleleFreq(0.0)..AlleleFreq(0.25000001)
+            af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.25 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "somatic_hom_ref".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: AlleleFreq(0.25000001)..AlleleFreq(0.5)
+            af_control: ContinuousAlleleFreqs::exclusive( 0.25..0.5 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "alt_allele_dropout".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: AlleleFreq(0.5)..AlleleFreq(1.00000001)
+            af_control: ContinuousAlleleFreqs::left_exclusive( 0.5..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "ref_allele_dropout".to_owned(),
             af_case: vec![AlleleFreq(1.0)],
-            af_control: AlleleFreq(0.0)..AlleleFreq(0.50000001)
+            af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.5 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "somatic_hom_alt".to_owned(),
             af_case: vec![AlleleFreq(1.0)],
-            af_control: AlleleFreq(0.50000001)..AlleleFreq(0.75000001)
+            af_control: ContinuousAlleleFreqs::left_exclusive( 0.5..0.75 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "germline_hom_alt".to_owned(),
             af_case: vec![AlleleFreq(1.0)],
-            af_control: AlleleFreq(0.75000001)..AlleleFreq(1.00000001)
+            af_control: ContinuousAlleleFreqs::left_exclusive( 0.75..1.0 )
         },
         libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
             name: "amplification_error_to_alt".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
-            af_control: AlleleFreq(0.0)..AlleleFreq(0.00000001)
+            af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.0 )
         },
         libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
             name: "somatic_het_from_ref".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
-            af_control: AlleleFreq(0.00000001)..AlleleFreq(0.25000001)
+            af_control: ContinuousAlleleFreqs::left_exclusive( 0.0..0.25 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "germline_het".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
-            af_control: AlleleFreq(0.25000001)..AlleleFreq(0.75000001)
+            af_control: ContinuousAlleleFreqs::left_exclusive( 0.25..0.75 )
         },
         libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
             name: "somatic_het_from_alt".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
-            af_control: AlleleFreq(0.75000001)..AlleleFreq(1.0)
+            af_control: ContinuousAlleleFreqs::exclusive( 0.75..1.0 )
         },
         libprosic::call::pairwise::PairEvent { //TODO: optimally, this would be a two-sided event?
             name: "amplification_error_to_ref".to_owned(),
             af_case: vec![AlleleFreq(0.5)],
-            af_control: AlleleFreq(1.0)..AlleleFreq(1.00000001)
+            af_control: ContinuousAlleleFreqs::inclusive( 1.0..1.0 )
         }
     ];
     // call absent variants as the complement of the other events
     let absent_event = libprosic::ComplementEvent { name: "absent".to_owned() };
 
-    let prior_model = libprosic::priors::SingleCellBulkModel::new(ploidy);
+    // TODO: implement the minimal number of points needed to evaluate over bulk ranges, so that each point event is evaluated and at least bulk-points-per-event are evaluated per range event; if there are point events apart from 0.0 and 1.0, every higher number of points can only be a multiple of this
+/*
+    for (i, event) in events.iter().enumerate() {
+    let n = max(
+        (n_bulk_per_event_min as f64 / self.min_event_range).ceil() as usize,
+        self.n_bulk_min);
+*/
+
+    let prior_model = libprosic::priors::SingleCellBulkModel::new(ploidy, n);
 
     // init joint model
     let mut joint_model = libprosic::model::PairCaller::new(
@@ -165,8 +174,8 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
             libprosic::model::priors::SingleCellBulkModel
         >, _, _, _, _>
     (
-        &candidates,
-        &output,
+        candidates,
+        output,
         &reference,
         &events,
         Some(&absent_event),
