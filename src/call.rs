@@ -53,6 +53,13 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     });
 */
 
+    // dummy values until we implement indel calling for single cell data
+    let prob_insertion_artifact = Prob(0.0);
+    let prob_deletion_artifact = Prob(0.0);
+    let prob_insertion_extend_artifact = Prob(0.0);
+    let prob_deletion_extend_artifact = Prob(0.0);
+    let indel_haplotype_window = 50;
+
     // init bulk sample
     let bulk_sample = libprosic::Sample::new(
         bulk_bam,
@@ -67,7 +74,12 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
         prob_spurious_isize,
-        max_indel_overlap
+        prob_insertion_artifact,
+        prob_deletion_artifact,
+        prob_insertion_extend_artifact,
+        prob_deletion_extend_artifact,
+        max_indel_overlap,
+        indel_haplotype_window
     );
 
     // init single sample
@@ -84,7 +96,12 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
         prob_spurious_isize,
-        max_indel_overlap
+        prob_insertion_artifact,
+        prob_deletion_artifact,
+        prob_insertion_extend_artifact,
+        prob_deletion_extend_artifact,
+        max_indel_overlap,
+        indel_haplotype_window
     );
 
     // setup events: case = single cell; control = bulk
@@ -145,8 +162,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
             af_control: ContinuousAlleleFreqs::inclusive( 1.0..1.0 )
         }
     ];
-    // call absent variants as the complement of the other events
-    let absent_event = libprosic::ComplementEvent { name: "absent".to_owned() };
 
     // TODO: implement the minimal number of points needed to evaluate over bulk ranges, so that each point event is evaluated and at least bulk-points-per-event are evaluated per range event; if there are point events apart from 0.0 and 1.0, every higher number of points can only be a multiple of this
 /*
@@ -178,7 +193,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         output,
         &reference,
         &events,
-        Some(&absent_event),
         &mut joint_model,
         omit_snvs,
         omit_indels,
