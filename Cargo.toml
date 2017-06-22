@@ -19,6 +19,10 @@ rustc-serialize = "0.3.*"
 flame = { version = "^0.1.2", optional = true }
 flamer = { version = "^0.1.2", optional = true }
 
+[dev-dependencies]
+cli_test_dir = "^0.1"
+regex = "^0.2"
+
 [features]
 default = []
 flame_it = ["flame", "flamer", "libprosic/flame_it"]
