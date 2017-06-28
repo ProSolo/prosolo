@@ -1,17 +1,41 @@
-# Postprocessing for Single Cell Variant Calls (ProSolo)
+# Processing potential variant calls in single cells (ProSolo)
 
-ProSolo is a caller for single cell variants in single cell-bulk sample pairs, sequenced with any next-generation sequencing technology.
-It provides a novel latent variable model that integrates various levels of uncertainty, and thereby allows to properly asses the probability of having a somatic variant in the single cell while controlling the false discovery rate.
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/prosolo/README.html)
+[![Anaconda-Server Badge](https://anaconda.org/bioconda/prosolo/badges/downloads.svg)](http://bioconda.github.io/recipes/prosolo/README.html)
+
+ProSolo is a variant caller for single cell data from whole genome amplification with multiple displacement amplification (MDA). It relies on a pair of samples, where one is from an MDA single cell and the other from a bulk sample of the same cell population, sequenced with any next-generation sequencing technology.
+
+It uses an extension of the novel latent variable model of [libprosic](https://github.com/PROSIC/libprosic), that already integrates various levels of uncertainty. It adds a layer that accounts for amplification biases (and errors) of MDA, and thereby allows to properly asses the probability of having a variant in the MDA single cell.
+
+In the future, ProSolo will also allow for controlling the false discovery rate, but currently, only the the `single-cell-bulk` subcommand with the `--omit-indels` flag is thoroughly tested.
 
 ## Installation
 
+ProSolo is available via [Bioconda](https://bioconda.github.io), a distribution of bioinformatics software for the conda package manager.
+[Bioconda can be set up](https://bioconda.github.io/#using-bioconda) in any Linux environment, even without admin rights.
+With [Bioconda set up](https://bioconda.github.io/#using-bioconda), ProSolo can be installed via
+
+	$ conda install prosolo
+
 ## Usage
 
-### Step 1: Calling
+### Variant Calling
 
+To try out calling command syntax, please use the test data in the repo folder `tests/` as follows:
+```
+prosolo single-cell-bulk --omit-indels \
+    --candidates tests/candidates.bcf \
+    --output test-out_omit-indels.bcf \
+    --sc-isize-mean 12 \
+    --sc-isize-sd 1 \
+    tests/single-cell.bam \
+    tests/bulk.bam \
+    tests/ref.fa
+```
 
-### Step 2: Controlling FDR
+### Controlling the false discovery rate
 
+Example usage to come, performance not yet evaluated.
 
 # Authors
 
