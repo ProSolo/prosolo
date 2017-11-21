@@ -152,23 +152,36 @@ subcommands:
             help: Path to file that will contain observations and the parameters of the fitted model as JSON.
 
   - control-fdr:
-      about: Print thresholds for controlling the FDR at different levels.
+      about: Print thresholds for controlling the FDR at different levels using Benjamini-Hochberg over p-values generated from an empirical null distribution of posterior error probabilities.
       args:
         - calls:
             required: true
-            help: Calls as provided by prosolo single-cell-bulk.
-        - null-calls:
+            help: Calls as provided by prosic tumor-normal.
+        - method:
             required: true
-            help: Null model calls as provided by prosolo single-cell-bulk, e.g. when flipping single cell and bulk sample.
-        - event:
-            long: event
-            short: e
+            long: method
             value_name: STRING
-            help: Event to consider.
+            possible_values:
+              - bh
+              - ev
+            help: |
+              Method to use. If bh, use Benjamini-Hochberg over p-values generated from an empirical null distribution of posterior error probabilities (--null-calls is required in this case).
+              If ev, calculate the expected FDR over posterior error probabilities as presented by Mueller et al. 2006.
+        - null-calls:
+            value_name: FILE
+            long: null-calls
+            help: Null model calls as provided by prosolo single-cell-bulk, e.g. when flipping single cell and bulk sample.
+        - events:
+            required: true
+            long: events
+            short: e
+            value_name: STRING(,STRING)*
+            use_delimiter: true
+            help: Comma-separated list of Events to consider jointly (e.g. `--events Event1,Event2`).
         - vartype:
+            required: true
             long: var
             value_name: STRING
-            required: true
             help: Variant type to consider (SNV, INS, DEL).
         - min-len:
             long: min-len
