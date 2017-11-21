@@ -4,9 +4,9 @@ version = "0.2.0"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-libprosic = "0.4.*"
-clap = {version = "2.10.*", features = ["yaml", "color", "suggestions"]}
-rust-htslib = "0.12.*"
+libprosic = "0.5.*"
+clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
+rust-htslib = "0.13.*"
 bio = "0.14.*"
 log = "0.3.*"
 fern = "0.3.*"
