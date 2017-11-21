@@ -25,7 +25,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
 //    let bulk_effective_mutation_rate = value_t!(matches, "effective-mutation-rate", f64).unwrap_or(2000.0);
 //    let deletion_factor = value_t!(matches, "deletion-factor", f64).unwrap_or(0.03);
 //    let insertion_factor = value_t!(matches, "insertion-factor", f64).unwrap_or(0.01);
-//    let min_somatic_af = value_t!(matches, "min-somatic-af", f64).map(|af| AlleleFreq(af)).unwrap_or(AlleleFreq(0.05));
     let pileup_window = value_t!(matches, "pileup-window", u32).unwrap_or(2500);
     let no_fragment_evidence = matches.is_present("omit-fragment-evidence");
     let no_secondary = matches.is_present("omit-secondary-alignments");
@@ -42,8 +41,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
 //    let flat_priors = matches.is_present("flat-priors");
     let exclusive_end = matches.is_present("exclusive-end");
     let max_indel_overlap = value_t!(matches, "max-indel-overlap", u32).unwrap_or(25);
-
-    let prob_spurious_isize = try!(Prob::checked(value_t!(matches, "prob-spurious-isize", f64).unwrap_or(0.0)));
 
     let max_indel_len = value_t!(matches, "max-indel-len", u32).unwrap_or(1000);
 
@@ -75,7 +72,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
             sd: bulk_sd_insert_size
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_spurious_isize,
         prob_insertion_artifact,
         prob_deletion_artifact,
         prob_insertion_extend_artifact,
@@ -97,7 +93,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
             sd: single_sd_insert_size
         },
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_spurious_isize,
         prob_insertion_artifact,
         prob_deletion_artifact,
         prob_insertion_extend_artifact,

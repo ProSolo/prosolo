@@ -95,15 +95,6 @@ subcommands:
         - adjust-mapq:
             long: adjust-mapq
             help: Downgrade mapping quality of alignments supporting an indel if there are no fragments supporting the same indel. Such cases are more likely to be alignment/repeat artifacts.
-        - prob-spurious-isize:
-            long: spurious-isize-rate
-            short: r
-            value_name: FLOAT
-            help: "Rate of wrongly reported insert size abberations (should be set depending on mapper, BWA: 0.01332338, LASER: 0.05922201) [0.0]."
-#        - min-somatic-af:
-#            long: min-somatic-af
-#            value_name: FLOAT
-#            help: Infimum of allele frequency for somatic mutation [0.0].
         - pileup-window:
             long: pileup-window
             value_name: INT
