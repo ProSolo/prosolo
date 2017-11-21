@@ -160,24 +160,6 @@ subcommands:
             value_name: FILE
             help: Path to file that will contain observations and the parameters of the fitted model as JSON.
 
-  - estimate-fdr:
-      about: Estimate the expected false discovery rate for mutation events. Prints an annotated BCF to STDOUT.
-      args:
-        - calls:
-            required: true
-            help: Calls as provided by prosolo single-cell-bulk.
-        - event:
-            long: event
-            short: e
-            value_name: STRING
-            multiple: true
-            help: Event to consider. Multiple allowed.
-        - output:
-            long: output
-            short: o
-            value_name: FILE
-            help: BCF file that shall contain the results (if omitted, write to STDOUT).
-
   - control-fdr:
       about: Print thresholds for controlling the FDR at different levels.
       args:
