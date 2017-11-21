@@ -79,24 +79,28 @@ pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let mut writer = io::stdout();
     let mut call_reader = try!(bcf::Reader::from_path(&call_bcf));
 
-    if method == "bh" {
-        let null_bcf = matches.value_of("null-calls").unwrap();
-        let mut null_reader = try!(bcf::Reader::from_path(&null_bcf));
+    match method {
+        "bh" => {
+            let null_bcf = matches.value_of("null-calls").unwrap_or_else(|| panic!("--null-calls required for controlling fdr with bh method") );
+            let mut null_reader = try!(bcf::Reader::from_path(&null_bcf));
 
-        estimation::fdr::bh::control_fdr(
-            &mut call_reader,
-            &mut null_reader,
-            &mut writer,
-            &events,
-            &vartype
-        )?;
-    } else {
-        estimation::fdr::ev::control_fdr(
-            &mut call_reader,
-            &mut writer,
-            &events,
-            &vartype
-        )?;
+            estimation::fdr::bh::control_fdr(
+                &mut call_reader,
+                &mut null_reader,
+                &mut writer,
+                &events,
+                &vartype
+            )?;
+        },
+        "ev" => {
+            estimation::fdr::ev::control_fdr(
+                &mut call_reader,
+                &mut writer,
+                &events,
+                &vartype
+            )?;
+        },
+        _ => panic!("Undefined method for controlling FDR.")
     }
 
     Ok(())
