@@ -7,7 +7,7 @@ ProSolo is a variant caller for single cell data from whole genome amplification
 
 It uses an extension of the novel latent variable model of [libprosic](https://github.com/PROSIC/libprosic), that already integrates various levels of uncertainty. It adds a layer that accounts for amplification biases (and errors) of MDA, and thereby allows to properly asses the probability of having a variant in the MDA single cell.
 
-In the future, ProSolo will also allow for controlling the false discovery rate, but currently, only the the `single-cell-bulk` subcommand with the `--omit-indels` flag is thoroughly tested.
+In the future, ProSolo will also implement indel calling, but currently, only the the `single-cell-bulk` subcommand with the `--omit-indels` flag is recommended.
 
 ## Installation
 
@@ -23,7 +23,8 @@ With [Bioconda set up](https://bioconda.github.io/#using-bioconda), ProSolo can 
 
 To try out calling command syntax, please use the test data in the repo folder `tests/` as follows:
 ```
-prosolo single-cell-bulk --omit-indels \
+prosolo single-cell-bulk \
+		--omit-indels \
     --candidates tests/candidates.bcf \
     --output test-out_omit-indels.bcf \
     --sc-isize-mean 12 \
@@ -35,7 +36,23 @@ prosolo single-cell-bulk --omit-indels \
 
 ### Controlling the false discovery rate
 
-Example usage to come, performance not yet evaluated.
+To control the false discovery rate (FDR) for the minimal output of the above example, use its expected output data in the repo folder `tests/` as follows:
+```
+prosolo control-fdr \
+    tests/expected-out_omit-indels.bcf \
+    --events ADO_TO_REF,ADO_TO_ALT \
+    --var SNV \
+    --method ev
+```
+In this case, we are jointly controlling the FDR for all `Events` that are allele dropouts in the single cell sample. For this set of `Events`, the above command will print probability cutoffs for different false discovery rates, e.g. `0.1819080263` for a false discovery rate of `0.04`. You can then use this to filter variants on the joint probabilities of the respective events:
+```
+prosolo apply-fdr \
+    tests/expected-out_omit-indels.bcf \
+    --events ADO_TO_REF,ADO_TO_ALT \
+    --var SNV \
+    --threshold 0.1819080263 \
+		--output ADO_fdr_0-04.bcf
+```
 
 # Authors
 
