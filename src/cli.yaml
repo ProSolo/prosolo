@@ -152,11 +152,11 @@ subcommands:
             help: Path to file that will contain observations and the parameters of the fitted model as JSON.
 
   - control-fdr:
-      about: Print thresholds for controlling the FDR at different levels using Benjamini-Hochberg over p-values generated from an empirical null distribution of posterior error probabilities.
+      about: Print thresholds for controlling the FDR at different levels based on posterior error probabilities.
       args:
         - calls:
             required: true
-            help: Calls as provided by prosic tumor-normal.
+            help: Calls as provided by prosolo single-cell-bulk.
         - method:
             required: true
             long: method
