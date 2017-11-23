@@ -7,7 +7,7 @@ use rust_htslib::bam;
 use bio::stats::Prob;
 
 
-fn path_or_pipe(arg: Option<&str>) -> Option<&str> {
+pub fn path_or_pipe(arg: Option<&str>) -> Option<&str> {
     arg.map_or(None, |f| if f == "-" { None } else { Some(f) })
 }
 

@@ -12,6 +12,9 @@ use libprosic;
 use libprosic::model::AlleleFreq;
 use libprosic::estimation;
 use libprosic::model;
+use libprosic::utils;
+
+use call;
 
 pub fn effective_mutation_rate(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let min_af = value_t!(matches, "min-af", f64).unwrap_or(0.12);
@@ -102,6 +105,38 @@ pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         },
         _ => panic!("Undefined method for controlling FDR.")
     }
+
+    Ok(())
+}
+
+pub fn apply_fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
+    let call_bcf = matches.value_of("calls").unwrap();
+    let mut call_reader = try!(bcf::Reader::from_path(&call_bcf));
+
+    let threshold = value_t!(matches, "threshold", f64).unwrap();
+
+    let events_list = matches.values_of("events").unwrap();
+    let events: Vec<DummyEvent> = events_list.map(|ev| DummyEvent { name: ev.to_owned() }).collect();
+
+    let vartype = matches.value_of("vartype").unwrap();
+    let min_len = value_t!(matches, "min-len", u32).ok();
+    let max_len = value_t!(matches, "max-len", u32).ok();
+    let vartype = parse_vartype(vartype, min_len, max_len)?;
+
+    let out = call::path_or_pipe(matches.value_of("output"));
+    let header = bcf::Header::with_template(&call_reader.header);
+    let mut writer = match out {
+        Some(f) => bcf::Writer::from_path(f, &header, false, false)?,
+        None    => bcf::Writer::from_stdout(&header, false, false)?
+    };
+
+    utils::filter_by_threshold(
+        &mut call_reader,
+        &threshold,
+        &mut writer,
+        &events,
+        &vartype
+    )?;
 
     Ok(())
 }

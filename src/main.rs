@@ -81,6 +81,11 @@ fn main() {
             error!("Error: {}", e);
             process::exit(1);
         }
+    } else if let Some(matches) = matches.subcommand_matches("apply-fdr") {
+        if let Err(e) = estimate::apply_fdr(matches) {
+            error!("Error: {}", e);
+            process::exit(1);
+        }
     }
 
     write_flamegraph();
