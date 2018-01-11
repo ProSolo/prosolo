@@ -7,7 +7,7 @@ authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 #libprosic = "0.6.*"
 libprosic = { git = "https://github.com/prosic/libprosic.git" , branch = "patch-apply-fdr" }
 clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
-rust-htslib = "0.13.*"
+rust-htslib = "0.16.*"
 bio = "0.16.*"
 log = "0.3.*"
 fern = "0.3.*"
