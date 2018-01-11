@@ -4,16 +4,17 @@ version = "0.2.0"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-libprosic = "0.5.*"
+#libprosic = "0.6.*"
+libprosic = { git = "https://github.com/prosic/libprosic.git" , branch = "patch-apply-fdr" }
 clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
 rust-htslib = "0.13.*"
-bio = "0.14.*"
+bio = "0.16.*"
 log = "0.3.*"
 fern = "0.3.*"
 csv = "0.14.*"
 itertools = "0.4.*"
 time = "*"
-rustc-serialize = "0.3.*"
+serde_json = "1.0"
 flame = { version = "^0.1.2", optional = true }
 flamer = { version = "^0.1.2", optional = true }
 

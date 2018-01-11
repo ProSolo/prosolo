@@ -13,7 +13,8 @@ extern crate clap;
 extern crate csv;
 extern crate itertools;
 extern crate time;
-extern crate rustc_serialize;
+#[macro_use]
+extern crate serde_json;
 
 extern crate libprosic;
 extern crate rust_htslib;
