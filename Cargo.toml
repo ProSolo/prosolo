@@ -4,8 +4,7 @@ version = "0.2.0"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-#libprosic = "0.6.*"
-libprosic = { git = "https://github.com/prosic/libprosic.git" , branch = "patch-apply-fdr" }
+libprosic = "0.6.*"
 clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
 rust-htslib = "0.16.*"
 bio = "0.16.*"
