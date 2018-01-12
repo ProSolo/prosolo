@@ -19,6 +19,8 @@ With [Bioconda set up](https://bioconda.github.io/#using-bioconda), ProSolo can 
 
 ## Usage
 
+For general usage, please issue `prosolo --help` on the command line. Help is also available for all subcommands listed there, e.g. `prosolo single-cell-bulk --help`.
+
 ### Variant Calling
 
 To try out calling command syntax, please use the test data in the repo folder `tests/` as follows:
@@ -44,13 +46,13 @@ prosolo control-fdr \
     --var SNV \
     --method ev
 ```
-In this case, we are jointly controlling the FDR for all `Events` that are allele dropouts in the single cell sample. For this set of `Events`, the above command will print probability cutoffs for different false discovery rates, e.g. `0.1819080263` for a false discovery rate of `0.04`. You can then use this to filter variants on the joint probabilities of the respective events:
+In this case, we are jointly controlling the FDR for all `Events` that are allele dropouts in the single cell sample. For this set of `Events`, the above command will print probability cutoffs for different false discovery rates, e.g. `0.18190802633762157` for a false discovery rate of `0.04`. You can then use this to filter variants on the joint probabilities of the respective events:
 ```
 prosolo apply-fdr \
     tests/expected-out_omit-indels.bcf \
     --events ADO_TO_REF,ADO_TO_ALT \
     --var SNV \
-    --threshold 0.1819080263 \
+    --threshold 0.18190802633762157 \
 		--output ADO_fdr_0-04.bcf
 ```
 
