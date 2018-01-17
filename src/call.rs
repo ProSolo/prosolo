@@ -111,12 +111,12 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         libprosic::call::pairwise::PairEvent {
             name: "ADO_to_ref".to_owned(),
             af_case: vec![AlleleFreq(0.0)],
-            af_control: ContinuousAlleleFreqs::inclusive( 0.5..1.0 )
+            af_control: ContinuousAlleleFreqs::right_exclusive( 0.5..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "ADO_to_alt".to_owned(),
             af_case: vec![AlleleFreq(1.0)],
-            af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.5 )
+            af_control: ContinuousAlleleFreqs::left_exclusive( 0.0..0.5 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "hom_alt".to_owned(),
@@ -125,7 +125,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         },
         libprosic::call::pairwise::PairEvent {
             name: "err_alt".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
+            af_case: vec![AlleleFreq(0.5), AlleleFreq(1.0)],
             af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.0 )
         },
         libprosic::call::pairwise::PairEvent {
@@ -135,7 +135,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         },
         libprosic::call::pairwise::PairEvent {
             name: "err_ref".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
+            af_case: vec![AlleleFreq(0.0), AlleleFreq(0.5)],
             af_control: ContinuousAlleleFreqs::inclusive( 1.0..1.0 )
         }
     ];
