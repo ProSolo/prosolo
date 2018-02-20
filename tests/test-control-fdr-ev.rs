@@ -33,7 +33,7 @@ fn test_apply_fdr_ev() {
     let _output = apply_fdr_ev.cmd()
         .arg("apply-fdr")
         .arg(apply_fdr_ev.src_path("tests/expected-out_omit-indels.bcf"))
-        .arg("--threshold").arg("0.1819080263")
+        .arg("--threshold").arg("0.18190802633762157")
         .arg("--events").arg("ADO_TO_ALT,ADO_TO_REF")
         .arg("--var").arg("SNV")
         .arg("--output").arg("test-out_ADO_0-04.bcf")
