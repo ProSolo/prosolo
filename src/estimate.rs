@@ -6,6 +6,7 @@ use std::fs::File;
 use clap;
 use csv;
 use rust_htslib::bcf;
+use rust_htslib::bcf::Read;
 
 use libprosic;
 use libprosic::model::AlleleFreq;
@@ -123,7 +124,7 @@ pub fn apply_fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let vartype = parse_vartype(vartype, min_len, max_len)?;
 
     let out = call::path_or_pipe(matches.value_of("output"));
-    let header = bcf::Header::with_template(&call_reader.header());
+    let header = bcf::Header::from_template(call_reader.header());
     let mut writer = match out {
         Some(f) => bcf::Writer::from_path(f, &header, false, false)?,
         None    => bcf::Writer::from_stdout(&header, false, false)?
