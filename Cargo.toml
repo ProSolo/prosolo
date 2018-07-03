@@ -10,7 +10,8 @@ clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
 # rust-htslib = "0.17.0"
 rust-htslib = { git="https://github.com/rust-bio/rust-htslib.git", rev="2718cb3c9ee9f840ed8dda57898fb43938ec707a" }
 # bio = { git="https://github.com/rust-bio/rust-bio.git", branch="master" }
-bio = "0.21.0"
+# bio = "0.21.0"
+bio = { git="https://github.com/rust-bio/rust-bio.git", rev="de17d56f1107eb94770aed6e0378cab04a75d4ed" }
 log = "0.3.*"
 fern = "0.3.*"
 csv = "0.14.*"
