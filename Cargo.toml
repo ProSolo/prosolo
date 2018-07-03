@@ -4,10 +4,14 @@ version = "0.4.0"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-libprosic = { git = "https://github.com/PROSIC/libprosic", rev = "7dfda4ef909015a3fb31557bfc0ab7a2b29b7386" }
+# libprosic = { git = "https://github.com/PROSIC/libprosic", rev = "607b3dc4f3f260e182985763385a0dbecee38e8a" }
+libprosic = { path = "../libprosic" }
 clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
-rust-htslib = "0.16.*"
-bio = "0.16.*"
+# rust-htslib = "0.17.0"
+rust-htslib = { git = "https://github.com/rust-bio/rust-htslib", rev = "f523ffa2d983ca32c07e6bb41d0ab0ac4512a6af" }
+# bio = { git="https://github.com/rust-bio/rust-bio.git", branch="master" }
+# bio = "0.17.*"
+bio = { git="https://github.com/rust-bio/rust-bio.git", rev="4a472bc1c17fe38487ec238736fa67afa5e17afc" }
 log = "0.3.*"
 fern = "0.3.*"
 csv = "0.14.*"
@@ -24,3 +28,6 @@ regex = "^0.2"
 [features]
 default = []
 flame_it = ["flame", "flamer", "libprosic/flame_it"]
+
+[profile.release]
+debug = true
