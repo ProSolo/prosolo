@@ -2,7 +2,7 @@ use std::error::Error;
 
 use clap;
 use libprosic;
-use libprosic::model::{AlleleFreq, ContinuousAlleleFreqs};
+use libprosic::model::{AlleleFreq, ContinuousAlleleFreqs, DiscreteAlleleFreqs};
 use rust_htslib::bam;
 use bio::stats::Prob;
 
@@ -76,7 +76,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         prob_deletion_artifact,
         prob_insertion_extend_artifact,
         prob_deletion_extend_artifact,
-        max_indel_overlap,
         indel_haplotype_window
     );
 
@@ -97,7 +96,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         prob_deletion_artifact,
         prob_insertion_extend_artifact,
         prob_deletion_extend_artifact,
-        max_indel_overlap,
         indel_haplotype_window
     );
 
@@ -105,37 +103,37 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let events = [
         libprosic::call::pairwise::PairEvent {
             name: "hom_ref".to_owned(),
-            af_case: vec![AlleleFreq(0.0)],
+            af_case: DiscreteAlleleFreqs::absent(),
             af_control: ContinuousAlleleFreqs::right_exclusive( 0.0..0.5 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "ADO_to_ref".to_owned(),
-            af_case: vec![AlleleFreq(0.0)],
+            af_case: DiscreteAlleleFreqs::absent(),
             af_control: ContinuousAlleleFreqs::right_exclusive( 0.5..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "ADO_to_alt".to_owned(),
-            af_case: vec![AlleleFreq(1.0)],
+            af_case: DiscreteAlleleFreqs::new( vec![AlleleFreq(1.0)] ),
             af_control: ContinuousAlleleFreqs::left_exclusive( 0.0..0.5 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "hom_alt".to_owned(),
-            af_case: vec![AlleleFreq(1.0)],
+            af_case: DiscreteAlleleFreqs::new( vec![AlleleFreq(1.0)] ),
             af_control: ContinuousAlleleFreqs::left_exclusive( 0.5..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "err_alt".to_owned(),
-            af_case: vec![AlleleFreq(0.5), AlleleFreq(1.0)],
+            af_case: DiscreteAlleleFreqs::feasible(2).not_absent(),
             af_control: ContinuousAlleleFreqs::inclusive( 0.0..0.0 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "het".to_owned(),
-            af_case: vec![AlleleFreq(0.5)],
+            af_case: DiscreteAlleleFreqs::new( vec![AlleleFreq(0.5)] ),
             af_control: ContinuousAlleleFreqs::exclusive( 0.0..1.0 )
         },
         libprosic::call::pairwise::PairEvent {
             name: "err_ref".to_owned(),
-            af_case: vec![AlleleFreq(0.0), AlleleFreq(0.5)],
+            af_case: DiscreteAlleleFreqs::new( vec![AlleleFreq(0.0), AlleleFreq(0.5)] ),
             af_control: ContinuousAlleleFreqs::inclusive( 1.0..1.0 )
         }
     ];
