@@ -18,8 +18,9 @@ csv = "0.14.*"
 itertools = "0.4.*"
 time = "*"
 serde_json = "1.0"
-flame = { version = "^0.1.2", optional = true }
-flamer = { version = "^0.1.2", optional = true }
+# flame = { version = "0.2.2", optional = true }
+flame = { git = "https://github.com/TyOverby/flame.git", branch = "master", optional = true }
+flamer = { version = "^0.2.3", optional = true }
 
 [dev-dependencies]
 cli_test_dir = "^0.1"
