@@ -38,6 +38,7 @@ fn write_flamegraph() {
         .unwrap();
 }
 
+#[cfg(feature="flame_it")]
 fn merge_spans(spans: &mut Vec<flame::Span>) {
     if spans.is_empty() {
         return;
