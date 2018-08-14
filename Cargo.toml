@@ -8,10 +8,12 @@ authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 libprosic = { path = "../libprosic" }
 clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
 # rust-htslib = "0.17.0"
-rust-htslib = { git="https://github.com/rust-bio/rust-htslib.git", rev="2718cb3c9ee9f840ed8dda57898fb43938ec707a" }
+# rust-htslib = { git="https://github.com/rust-bio/rust-htslib.git", rev="30c32dea94f0487667831b21f56ef8ac9fca0659" }
+rust-htslib = { path = "../rust-htslib" }
 # bio = { git="https://github.com/rust-bio/rust-bio.git", branch="master" }
 # bio = "0.21.0"
-bio = { git="https://github.com/rust-bio/rust-bio.git", rev="de17d56f1107eb94770aed6e0378cab04a75d4ed" }
+# bio = { git="https://github.com/rust-bio/rust-bio.git", rev="de17d56f1107eb94770aed6e0378cab04a75d4ed" }
+bio = { path = "../rust-bio" }
 log = "0.3.*"
 fern = "0.3.*"
 csv = "0.14.*"
