@@ -1,7 +1,10 @@
 #![cfg_attr(feature="flame_it", feature(plugin, custom_attribute))]
 #![cfg_attr(feature="flame_it", plugin(flamer))]
 
-#[cfg(feature="flame_it")]
+#![cfg_attr(feature="flame_it_details", feature(plugin, custom_attribute))]
+#![cfg_attr(feature="flame_it_details", plugin(flamer))]
+
+#[cfg(any(feature="flame_it", feature="flame_it_details"))]
 extern crate flame;
 
 #[macro_use]
@@ -19,7 +22,7 @@ extern crate libprosic;
 extern crate rust_htslib;
 extern crate bio;
 
-#[cfg(feature="flame_it")]
+#[cfg(any(feature="flame_it", feature="flame_it_details"))]
 use std::fs::File;
 use std::process;
 use std::mem;
@@ -30,7 +33,7 @@ pub mod call;
 pub mod estimate;
 
 /// Implementation as given by @ebarnard at: https://github.com/TyOverby/flame/issues/33#issuecomment-352312506
-#[cfg(feature="flame_it")]
+#[cfg(any(feature="flame_it", feature="flame_it_details"))]
 fn write_flamegraph() {
     let mut spans = flame::threads().into_iter().next().unwrap().spans;
     merge_spans(&mut spans);
@@ -38,7 +41,7 @@ fn write_flamegraph() {
         .unwrap();
 }
 
-#[cfg(feature="flame_it")]
+#[cfg(any(feature="flame_it", feature="flame_it_details"))]
 fn merge_spans(spans: &mut Vec<flame::Span>) {
     if spans.is_empty() {
         return;
@@ -84,7 +87,7 @@ fn merge_spans(spans: &mut Vec<flame::Span>) {
 }
 
 
-#[cfg(not(feature="flame_it"))]
+#[cfg(not(any(feature="flame_it", feature="flame_it_details")))]
 fn write_flamegraph() {
 }
 
