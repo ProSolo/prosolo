@@ -66,7 +66,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_fragment_evidence,
         !no_secondary,
         !no_mapq,
-        adjust_mapq,
         libprosic::InsertSize {
             mean: bulk_mean_insert_size,
             sd: bulk_sd_insert_size
@@ -86,7 +85,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_fragment_evidence,
         !no_secondary,
         !no_mapq,
-        adjust_mapq,
         libprosic::InsertSize {
             mean: single_mean_insert_size,
             sd: single_sd_insert_size
