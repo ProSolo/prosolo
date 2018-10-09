@@ -11,13 +11,13 @@ pub fn path_or_pipe(arg: Option<&str>) -> Option<&str> {
     arg.map_or(None, |f| if f == "-" { None } else { Some(f) })
 }
 
+fn alignment_properties(path: &str) -> Result<libprosic::AlignmentProperties, Box<Error>> {
+    let mut bam = bam::Reader::from_path(path)?;
+    Ok(libprosic::AlignmentProperties::estimate(&mut bam)?)
+}
 
 pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     // read command line parameters
-    let single_mean_insert_size = value_t!(matches, "single-cell-insert-size-mean", f64).unwrap();
-    let single_sd_insert_size = value_t!(matches, "single-cell-insert-size-sd", f64).unwrap();
-    let bulk_mean_insert_size = value_t!(matches, "bulk-insert-size-mean", f64).unwrap_or(single_mean_insert_size);
-    let bulk_sd_insert_size = value_t!(matches, "bulk-insert-size-sd", f64).unwrap_or(single_sd_insert_size);
 //    let bulk_heterozygosity = try!(Prob::checked(value_t!(matches, "heterozygosity", f64).unwrap_or(1.25E-4)));
     let ploidy = value_t!(matches, "ploidy", u32).unwrap_or(2);
     let n_bulk_min = value_t!(matches, "bulk-min-n", usize).unwrap_or(8);
@@ -29,7 +29,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let no_fragment_evidence = matches.is_present("omit-fragment-evidence");
     let no_secondary = matches.is_present("omit-secondary-alignments");
     let no_mapq = matches.is_present("omit-mapq");
-    let adjust_mapq = matches.is_present("adjust-mapq");
     let omit_snvs = matches.is_present("omit-snvs");
     let omit_indels = matches.is_present("omit-indels");
     let single = matches.value_of("single-cell").unwrap();
@@ -40,9 +39,14 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let observations = matches.value_of("observations");
 //    let flat_priors = matches.is_present("flat-priors");
     let exclusive_end = matches.is_present("exclusive-end");
-    let max_indel_overlap = value_t!(matches, "max-indel-overlap", u32).unwrap_or(25);
 
     let max_indel_len = value_t!(matches, "max-indel-len", u32).unwrap_or(1000);
+
+    let single_alignment_properties = alignment_properties(&single)?;
+    let bulk_alignment_properties = alignment_properties(&bulk)?;
+
+    info!("estimated single properties: {:?}", single_alignment_properties);
+    info!("estimated bulk properties: {:?}", bulk_alignment_properties);
 
     let single_bam = bam::IndexedReader::from_path(&single)?;
     let bulk_bam = bam::IndexedReader::from_path(&bulk)?;
@@ -66,10 +70,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_fragment_evidence,
         !no_secondary,
         !no_mapq,
-        libprosic::InsertSize {
-            mean: bulk_mean_insert_size,
-            sd: bulk_sd_insert_size
-        },
+        bulk_alignment_properties,
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
         prob_insertion_artifact,
         prob_deletion_artifact,
@@ -85,10 +86,7 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_fragment_evidence,
         !no_secondary,
         !no_mapq,
-        libprosic::InsertSize {
-            mean: single_mean_insert_size,
-            sd: single_sd_insert_size
-        },
+        single_alignment_properties,
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
         prob_insertion_artifact,
         prob_deletion_artifact,

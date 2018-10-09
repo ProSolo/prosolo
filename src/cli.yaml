@@ -36,26 +36,6 @@ subcommands:
             short: o
             value_name: FILE
             help: BCF file that shall contain the results (if omitted, write to STDOUT).
-        - single-cell-insert-size-mean:
-            long: sc-isize-mean
-            required: true
-            short: m
-            value_name: FLOAT
-            help: Mean of single cell sample insert size.
-        - single-cell-insert-size-sd:
-            long: sc-isize-sd
-            short: s
-            required: true
-            value_name: FLOAT
-            help: Standard deviation of single cell sample insert size.
-        - bulk-insert-size-mean:
-            long: b-isize-mean
-            value_name: FLOAT
-            help: Mean of bulk sample insert size (if it differs from single cell).
-        - bulk-insert-size-sd:
-            long: b-isize-sd
-            value_name: FLOAT
-            help: Standard deviation of bulk sample insert size (if it differs from single cell).
 #        - effective-mutation-rate:
 #            long: effmut
 #            value_name: FLOAT
@@ -92,9 +72,6 @@ subcommands:
 #            long: het
 #            value_name: FLOAT
 #            help: Expected heterozygosity of bulk sample (ignored if --flat-priors) [1.25E-4].
-        - adjust-mapq:
-            long: adjust-mapq
-            help: Downgrade mapping quality of alignments supporting an indel if there are no fragments supporting the same indel. Such cases are more likely to be alignment/repeat artifacts.
         - pileup-window:
             long: pileup-window
             value_name: INT
@@ -128,10 +105,6 @@ subcommands:
         - exclusive-end:
             long: exclusive-end
             help: Assume that the END tag is exclusive (i.e. it points to the position after the variant). This is needed, e.g., for DELLY.
-        - max-indel-overlap:
-            long: max-indel-overlap
-            value_name: INT
-            help: When considering read evidence for an indel, omit alignments that overlap more than the given value. The default value ensures fair sampling of reads supporting alternative and reference allele. Choosing a too large overlap results in biases towards the reference allele, because of too low MAPQs and unmapped reads [25].
 
   - estimate-mutation-rate:
       about: Estimate the effective mutation rate of a tumor sample from a VCF/BCF with candidate variants from STDIN.
