@@ -20,8 +20,6 @@ csv = "0.14.*"
 itertools = "0.4.*"
 time = "*"
 serde_json = "1.0"
-flame = { version = "0.2.1-pre2", optional = true }
-flamer = { version = "^0.2.3", optional = true }
 
 [dev-dependencies]
 cli_test_dir = "^0.1"
@@ -29,8 +27,6 @@ regex = "^0.2"
 
 [features]
 default = []
-flame_it = ["flame", "flamer", "libprosic/flame_it"]
-flame_it_details = ["flame", "flamer", "libprosic/flame_it", "libprosic/flame_it_details"]
 
 [profile.release]
 debug = true
