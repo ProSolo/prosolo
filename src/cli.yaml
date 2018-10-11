@@ -74,10 +74,31 @@ subcommands:
 #            value_name: FLOAT
 #            default_value: "1.25E-4"
 #            help: Expected heterozygosity of bulk sample.
+        - prob-spurious-ins:
+            long: spurious-ins-rate
+            value_name: FLOAT
+            default_value: "2.8e-6"
+            help: "Rate of spuriously inserted bases by the sequencer (Illumina: 2.8e-6, see Schirmer et al. BMC Bioinformatics 2016)."
+        - prob-spurious-del:
+            long: spurious-del-rate
+            value_name: FLOAT
+            default_value: "5.1e-6"
+            help: "Rate of spuriosly deleted bases by the sequencer (Illumina: 5.1e-6, see Schirmer et al. BMC Bioinformatics 2016)."
+        - prob-ins-extend:
+            long: spurious-insext-rate
+            value_name: FLOAT
+            default_value: "0.0"
+            help: "Extension rate of spurious insertions by the sequencer (Illumina: 0.0, see Schirmer et al. BMC Bioinformatics 2016) [0.0]."
+        - prob-del-extend:
+            long: spurious-delext-rate
+            value_name: FLOAT
+            default_value: "0.0"
+            help: "Extension rate of spurious insertions by the sequencer (Illumina: 0.0, see Schirmer et al. BMC Bioinformatics 2016)."
         - pileup-window:
             long: pileup-window
             value_name: INT
-            help: Window to investigate for evidence left and right of each variant [2500].
+            default_value: "2500"
+            help: Window to investigate for evidence left and right of each variant.
         - omit-snvs:
             long: omit-snvs
             help: Don't call SNVs.
@@ -87,12 +108,6 @@ subcommands:
         - omit-fragment-evidence:
             long: omit-fragment-evidence
             help: Omit evidence consisting of read pairs with unexpected insert size (insert size parameters will be ignored).
-        - omit-secondary-alignments:
-            long: omit-secondary-alignments
-            help: Omit secondary alignments.
-        - omit-mapq:
-            long: omit-mapq
-            help: Omit mapping quality (all alignments are trusted).
         - observations:
             long: obs
             value_name: FILE
@@ -107,6 +122,11 @@ subcommands:
         - exclusive-end:
             long: exclusive-end
             help: Assume that the END tag is exclusive (i.e. it points to the position after the variant). This is needed, e.g., for DELLY.
+        - indel-window:
+            long: indel-window
+            value_name: INT
+            default_value: "100"
+            help: Number of bases to consider left and right of indel breakpoint when calculating read support. This number should not be too large in order to avoid biases caused by other close variants.
 
   - estimate-mutation-rate:
       about: Estimate the effective mutation rate of a tumor sample from a VCF/BCF with candidate variants from STDIN.

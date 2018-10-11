@@ -2,7 +2,7 @@ use std::error::Error;
 
 use clap;
 use libprosic;
-use libprosic::model::{AlleleFreq, ContinuousAlleleFreqs, DiscreteAlleleFreqs};
+use libprosic::model::{ContinuousAlleleFreqs, DiscreteAlleleFreqs};
 use rust_htslib::bam;
 use bio::stats::Prob;
 
@@ -19,16 +19,14 @@ fn alignment_properties(path: &str) -> Result<libprosic::AlignmentProperties, Bo
 pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     // read command line parameters
 //    let bulk_heterozygosity = try!(Prob::checked(value_t!(matches, "heterozygosity", f64).unwrap_or(1.25E-4)));
-    let ploidy = value_t!(matches, "ploidy", u32).unwrap_or(2);
-    let n_bulk_min = value_t!(matches, "bulk-min-n", usize).unwrap_or(8);
-    let n_bulk_max = value_t!(matches, "bulk-max-n", usize).unwrap_or(100);
-//    let bulk_effective_mutation_rate = value_t!(matches, "effective-mutation-rate", f64).unwrap_or(2000.0);
-//    let deletion_factor = value_t!(matches, "deletion-factor", f64).unwrap_or(0.03);
-//    let insertion_factor = value_t!(matches, "insertion-factor", f64).unwrap_or(0.01);
-    let pileup_window = value_t!(matches, "pileup-window", u32).unwrap_or(2500);
+    let ploidy = value_t!(matches, "ploidy", u32).unwrap();
+    let n_bulk_min = value_t!(matches, "bulk-min-n", usize).unwrap();
+    let n_bulk_max = value_t!(matches, "bulk-max-n", usize).unwrap();
+//    let single_effective_mutation_rate = value_t!(matches, "effective-mutation-rate", f64).unwrap_or(2000.0);
+//    let deletion_factor = value_t!(matches, "deletion-factor", f64).unwrap();
+//    let insertion_factor = value_t!(matches, "insertion-factor", f64).unwrap();
+    let pileup_window = value_t!(matches, "pileup-window", u32).unwrap();
     let no_fragment_evidence = matches.is_present("omit-fragment-evidence");
-    let no_secondary = matches.is_present("omit-secondary-alignments");
-    let no_mapq = matches.is_present("omit-mapq");
     let omit_snvs = matches.is_present("omit-snvs");
     let omit_indels = matches.is_present("omit-indels");
     let single = matches.value_of("single-cell").unwrap();
@@ -39,6 +37,12 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let observations = matches.value_of("observations");
 //    let flat_priors = matches.is_present("flat-priors");
     let exclusive_end = matches.is_present("exclusive-end");
+    let indel_haplotype_window = value_t!(matches, "indel-window", u32).unwrap();
+
+    let prob_spurious_ins = Prob::checked(value_t_or_exit!(matches, "prob-spurious-ins", f64))?;
+    let prob_spurious_del = Prob::checked(value_t_or_exit!(matches, "prob-spurious-del", f64))?;
+    let prob_ins_extend = Prob::checked(value_t_or_exit!(matches, "prob-ins-extend", f64))?;
+    let prob_del_extend = Prob::checked(value_t_or_exit!(matches, "prob-del-extend", f64))?;
 
     let max_indel_len = value_t!(matches, "max-indel-len", u32).unwrap_or(1000);
 
@@ -50,18 +54,6 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
 
     let single_bam = bam::IndexedReader::from_path(&single)?;
     let bulk_bam = bam::IndexedReader::from_path(&bulk)?;
-/*
-    let genome_size = (0..bulk_bam.header.target_count()).fold(0, |s, tid| {
-        s + bulk_bam.header.target_len(tid).unwrap() as u64
-    });
-*/
-
-    // dummy values until we implement indel calling for single cell data
-    let prob_insertion_artifact = Prob(0.0);
-    let prob_deletion_artifact = Prob(0.0);
-    let prob_insertion_extend_artifact = Prob(0.0);
-    let prob_deletion_extend_artifact = Prob(0.0);
-    let indel_haplotype_window = 50;
 
     // init bulk sample
     let bulk_sample = libprosic::Sample::new(
@@ -72,10 +64,10 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_mapq,
         bulk_alignment_properties,
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_insertion_artifact,
-        prob_deletion_artifact,
-        prob_insertion_extend_artifact,
-        prob_deletion_extend_artifact,
+        prob_spurious_ins,
+        prob_spurious_del,
+        prob_ins_extend,
+        prob_del_extend,
         indel_haplotype_window
     );
 
@@ -88,10 +80,10 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         !no_mapq,
         single_alignment_properties,
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
-        prob_insertion_artifact,
-        prob_deletion_artifact,
-        prob_insertion_extend_artifact,
-        prob_deletion_extend_artifact,
+        prob_spurious_ins,
+        prob_spurious_del,
+        prob_ins_extend,
+        prob_del_extend,
         indel_haplotype_window
     );
 
@@ -134,7 +126,11 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         }
     ];
 
-    let prior_model = libprosic::priors::SingleCellBulkModel::new(ploidy, n_bulk_min, n_bulk_max);
+    let prior_model = libprosic::priors::SingleCellBulkModel::new(
+        ploidy,
+        n_bulk_min,
+        n_bulk_max
+    );
 
     // init joint model
     let mut joint_model = libprosic::model::PairCaller::new(
