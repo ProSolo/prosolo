@@ -6,6 +6,7 @@ use libprosic::model::{AlleleFreq, ContinuousAlleleFreqs, DiscreteAlleleFreqs};
 use rust_htslib::bam;
 use bio::stats::Prob;
 
+use std::collections::BTreeMap;
 
 pub fn path_or_pipe(arg: Option<&str>) -> Option<&str> {
     arg.map_or(None, |f| if f == "-" { None } else { Some(f) })
@@ -125,6 +126,52 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
             af_control: ContinuousAlleleFreqs::inclusive( 1.0..1.0 )
         }
     ];
+
+    // test that the `Event`s exactly cover the `Event` space
+    {
+        let mut event_collection = BTreeMap::new();
+        for daf in DiscreteAlleleFreqs::feasible(2).iter() {
+            event_collection.insert(*daf, BTreeMap::new());
+        }
+        for event in events.iter() {
+            for daf in event.af_case.iter() {
+                event_collection.get_mut(&daf).unwrap().insert(event.af_control.start, &event.af_control);
+            }
+        }
+        for (daf, cafs) in event_collection.iter() {
+            let mut first_caf = cafs.iter();
+            if let Some( (_, first) ) = first_caf.nth(0) {
+                if first.left_exclusive | ( first.start != AlleleFreq(0.0) ) {
+                    panic!("At DiscreteAlleleFreqs '{}', the lowest ContinuousAlleleFreqs starts at '{}' and left_exclusive is '{}'. Thus the Event space is not fully defined.", daf, first.start, first.left_exclusive);
+                }
+            } else {
+                panic!("At DiscreteAlleleFreqs '{}', there are no ContinuousAlleleFreqs defined in Events, thus the Event space is not fully defined.", daf);
+            }
+            let mut peekable = cafs.into_iter().peekable();
+            while let Some( (_, current) ) = peekable.next() {
+                if let Some( (_, next) ) = peekable.peek() {
+                    if current.end == next.start {
+                        if current.right_exclusive ^ next.left_exclusive {
+                            continue;
+                        } else if current.right_exclusive & next.left_exclusive {
+                            panic!("At DiscreteAlleleFreqs '{}', at {} the end of the previous ContinuousAlleleFreqs and the start of the ContinuousAlleleFreqs are exclusive. Thus this point in the Event space is not defined.", daf, current.end);
+                        } else {
+                            panic!("At DiscreteAlleleFreqs '{}', at {} the end of the previous ContinuousAlleleFreqs and the start of the ContinuousAlleleFreqs are inclusive. Thus this point in the Event space is multiply defined.", daf, current.end);
+                        }
+                    } else if current.end < next.start {
+                        panic!("At DiscreteAlleleFreqs '{}', there is a gap between the end of one ContinuousAlleleFreqs at '{}' and the next starting at '{}'. Thus the Event space is not fully defined.", daf, current.end, next.start);
+                    } else if current.end > next.start {
+                        panic!("At DiscreteAlleleFreqs '{}', there is an overlap between the end of one ContinuousAlleleFreqs at '{}' and the next starting at '{}'. Thus, this part of the Event space is multiply defined.", daf, current.end, next.start);
+                    }
+                } else {
+                    // last item on the iterator
+                    if current.right_exclusive | ( current.end != AlleleFreq(1.0) ) {
+                        panic!("At DiscreteAlleleFreqs '{}', the highest ContinuousAlleleFreqs ends at '{}' and right_exclusive is '{}'. Thus the Event space is not fully defined.", daf, current.end, current.right_exclusive);
+                    }
+                }
+            }
+        }
+    }
 
     let prior_model = libprosic::priors::SingleCellBulkModel::new(
         ploidy,
