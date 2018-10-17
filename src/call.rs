@@ -2,7 +2,7 @@ use std::error::Error;
 
 use clap;
 use libprosic;
-use libprosic::model::{ContinuousAlleleFreqs, DiscreteAlleleFreqs};
+use libprosic::model::{AlleleFreq, ContinuousAlleleFreqs, DiscreteAlleleFreqs};
 use rust_htslib::bam;
 use bio::stats::Prob;
 
@@ -60,8 +60,8 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         bulk_bam,
         pileup_window,
         !no_fragment_evidence,
-        !no_secondary,
-        !no_mapq,
+        false,
+        false,
         bulk_alignment_properties,
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
         prob_spurious_ins,
@@ -76,8 +76,8 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         single_bam,
         pileup_window,
         !no_fragment_evidence,
-        !no_secondary,
-        !no_mapq,
+        false,
+        false,
         single_alignment_properties,
         libprosic::likelihood::LatentVariableModel::with_single_sample(),
         prob_spurious_ins,

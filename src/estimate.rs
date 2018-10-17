@@ -76,11 +76,12 @@ pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let events: Vec<DummyEvent> = events_list.map(|ev| DummyEvent { name: ev.to_owned() }).collect();
     let alpha = LogProb::from(Prob::checked(alpha)?);
 
-    estimation::fdr::ev::control_fdr(
-        &mut call_reader,
-        &mut writer,
+    estimation::fdr::ev::control_fdr::<_, _, &str>(
+        call_bcf,
+        None,
         &events,
-        &vartype
+        &vartype,
+        alpha,
         )?;
 
     Ok(())

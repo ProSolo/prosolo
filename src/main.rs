@@ -6,16 +6,13 @@ extern crate clap;
 extern crate csv;
 extern crate itertools;
 extern crate time;
-#[macro_use]
 extern crate serde_json;
 
 extern crate libprosic;
 extern crate rust_htslib;
 extern crate bio;
 
-use std::fs::File;
 use std::process;
-use std::mem;
 
 use clap::App;
 
@@ -60,11 +57,6 @@ fn main() {
         }
     } else if let Some(matches) = matches.subcommand_matches("control-fdr") {
         if let Err(e) = estimate::fdr(matches) {
-            error!("Error: {}", e);
-            process::exit(1);
-        }
-    } else if let Some(matches) = matches.subcommand_matches("apply-fdr") {
-        if let Err(e) = estimate::apply_fdr(matches) {
             error!("Error: {}", e);
             process::exit(1);
         }
