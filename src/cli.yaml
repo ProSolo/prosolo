@@ -178,3 +178,8 @@ subcommands:
             long: max-len
             value_name: INT
             help: Maximum indel length to consider (exclusive).
+        - output:
+            long: output
+            short: o
+            value_name: FILE
+            help: BCF file that contains the filtered results (if omitted, write to STDOUT).

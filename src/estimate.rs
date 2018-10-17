@@ -12,6 +12,8 @@ use libprosic::model::AlleleFreq;
 use libprosic::estimation;
 use libprosic::model;
 
+use call;
+
 pub fn effective_mutation_rate(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let min_af = value_t!(matches, "min-af", f64).unwrap_or(0.12);
     let max_af = value_t!(matches, "max-af", f64).unwrap_or(0.25);
@@ -76,9 +78,11 @@ pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let events: Vec<DummyEvent> = events_list.map(|ev| DummyEvent { name: ev.to_owned() }).collect();
     let alpha = LogProb::from(Prob::checked(alpha)?);
 
+    let out = call::path_or_pipe(matches.value_of("output"));
+
     estimation::fdr::ev::control_fdr::<_, _, &str>(
         call_bcf,
-        None,
+        out,
         &events,
         &vartype,
         alpha,
