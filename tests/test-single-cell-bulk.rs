@@ -16,8 +16,6 @@ fn test_simulated_omit_indels() {
         .arg("--candidates").arg(omit_indels_run.src_path("tests/candidates.bcf"))
 //        .arg("--obs").arg("observations_omit-indels.out")
         .arg("--output").arg("test-out_omit-indels.bcf")
-        .arg("--sc-isize-mean").arg("12")
-        .arg("--sc-isize-sd").arg("1")
         .arg(omit_indels_run.src_path("tests/single-cell.bam"))
         .arg(omit_indels_run.src_path("tests/bulk.bam"))
         .arg(omit_indels_run.src_path("tests/ref.fa"))
