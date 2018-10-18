@@ -135,7 +135,10 @@ pub fn single_cell_bulk(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
         }
         for event in events.iter() {
             for daf in event.af_case.iter() {
-                event_collection.get_mut(&daf).unwrap().insert(event.af_control.start, &event.af_control);
+                let mut start = event.af_control.start;
+                // make sure events get added to the BTreeMap in the correct order, putting left_exclusive after inclusive point ContinuousAlleleFreqs
+                if event.af_control.left_exclusive { start += 0.0000000001};
+                event_collection.get_mut(&daf).unwrap().insert(start, &event.af_control);
             }
         }
         for (daf, cafs) in event_collection.iter() {
