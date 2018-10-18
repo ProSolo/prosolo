@@ -29,8 +29,6 @@ prosolo single-cell-bulk \
 		--omit-indels \
     --candidates tests/candidates.bcf \
     --output test-out_omit-indels.bcf \
-    --sc-isize-mean 12 \
-    --sc-isize-sd 1 \
     tests/single-cell.bam \
     tests/bulk.bam \
     tests/ref.fa
@@ -44,17 +42,10 @@ prosolo control-fdr \
     tests/expected-out_omit-indels.bcf \
     --events ADO_TO_REF,ADO_TO_ALT \
     --var SNV \
-    --method ev
-```
-In this case, we are jointly controlling the FDR for all `Events` that are allele dropouts in the single cell sample. For this set of `Events`, the above command will print probability cutoffs for different false discovery rates, e.g. `0.18190802633762157` for a false discovery rate of `0.04`. You can then use this to filter variants on the joint probabilities of the respective events:
-```
-prosolo apply-fdr \
-    tests/expected-out_omit-indels.bcf \
-    --events ADO_TO_REF,ADO_TO_ALT \
-    --var SNV \
-    --threshold 0.18190802633762157 \
+    --fdr 0.04
 		--output ADO_fdr_0-04.bcf
 ```
+In this case, we are jointly controlling the FDR for all `Events` that are allele dropouts in the single cell sample. For this set of `Events`, the above command will print a BCF file with all the entries with an estimated false discovery rate below `0.04`.
 
 # Authors
 
