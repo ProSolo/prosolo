@@ -1,13 +1,13 @@
 [package]
 name = "prosolo"
-version = "0.4.0"
+version = "0.5.0_beta"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-libprosic = { git="https://github.com/PROSIC/libprosic.git", branch="master" }
+libprosic = { git="https://github.com/PROSIC/libprosic.git", rev="7575c161c319f2c7fa949c0d2573bce43c35ce1d" }
 clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
-rust-htslib = { git="https://github.com/rust-bio/rust-htslib.git", branch="master" }
-bio = { git="https://github.com/rust-bio/rust-bio.git", branch="master" }
+rust-htslib = { git="https://github.com/rust-bio/rust-htslib.git", rev="1f9736ef108762e919802b3d78e22e47533c122c" }
+bio = { git="https://github.com/rust-bio/rust-bio.git", rev="a52075576a56ddd97c3264e99768b53c772f3c70" }
 log = "0.3.*"
 fern = "0.3.*"
 csv = "0.14.*"
