@@ -22,5 +22,7 @@ regex = "^0.2"
 [features]
 default = []
 
-[profile.release]
-debug = true
+# Uncomment the following if you need debugging symbols despite compiling for optimised performance
+# with --release flag
+#[profile.release]
+#debug = true
