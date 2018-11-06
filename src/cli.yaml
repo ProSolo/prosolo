@@ -36,69 +36,69 @@ subcommands:
             short: o
             value_name: FILE
             help: BCF file that shall contain the results (if omitted, write to STDOUT).
-        - single-cell-insert-size-mean:
-            long: sc-isize-mean
-            required: true
-            short: m
-            value_name: FLOAT
-            help: Mean of single cell sample insert size.
-        - single-cell-insert-size-sd:
-            long: sc-isize-sd
-            short: s
-            required: true
-            value_name: FLOAT
-            help: Standard deviation of single cell sample insert size.
-        - bulk-insert-size-mean:
-            long: b-isize-mean
-            value_name: FLOAT
-            help: Mean of bulk sample insert size (if it differs from single cell).
-        - bulk-insert-size-sd:
-            long: b-isize-sd
-            value_name: FLOAT
-            help: Standard deviation of bulk sample insert size (if it differs from single cell).
 #        - effective-mutation-rate:
 #            long: effmut
 #            value_name: FLOAT
-#            help: Effective SNV mutation rate of bulk sample (should be estimated from somatic SNVs, ignored if --flat-priors).
+#            default_value: "2000.0"
+#            help: Effective SNV mutation rate of tumor sample (should be estimated from somatic SNVs).
 #        - deletion-factor:
 #            long: deletion-factor
 #            short: d
 #            value_name: FLOAT
-#            help: Factor of deletion mutation rate relative to SNV mutation rate [0.03 according to Hodkinson et al. Nature Reviews Genetics 2011].
+#            default_value: "0.03"
+#            help: Factor of deletion mutation rate relative to SNV mutation rate (0.03 according to Hodkinson et al. Nature Reviews Genetics 2011).
 #        - insertion-factor:
 #            long: insertion-factor
 #            short: i
 #            value_name: FLOAT
-#            help: Factor of insertion mutation rate relative to SNV mutation rate [0.01 according to Hodkinson et al. Nature Reviews Genetics 2011].
+#            default_value: "0.01"
+#            help: Factor of insertion mutation rate relative to SNV mutation rate (0.01 according to Hodkinson et al. Nature Reviews Genetics 2011).
         - ploidy:
             long: ploidy
             short: p
             value_name: INT
-            help: General ploidy of sampled individual [2].
+            default_value: "2"
+            help: General ploidy of sampled individual.
         - bulk-min-n:
             long: bulk-min-n
             value_name: INT
-            help: Minimum number of (theoretical) reads to work with in the bulk background, in case the actual read count for a variant site is lower (in this case, probabilities will be computed for all discrete allele frequencies allowed by the minimum read count provided here). The code will work with a minimum of 2, but for a more even sampling of Event spaces, the default is at [8].
+            default_value: "8"
+            help: Minimum number of (theoretical) reads to work with in the bulk background, in case the actual read count for a variant site is lower (in this case, probabilities will be computed for all discrete allele frequencies allowed by the minimum read count provided here). The code will work with a minimum of 2, but for a more even sampling of Event spaces, the default is at 8.
         - bulk-max-n:
             long: bulk-max-n
             value_name: INT
-            help: Maximum number of (theoretical) reads to work with in the bulk background, in case the actual read count for a variant is higher (all read information will be used, but probabilities will only be computed for all discrete allele frequencies allowed by the maximum read count provided here). The code will work with any number above bulk-min-n, but we use the cap of the currently used Lodato amplification bias model for the single cell sample as the default [100].
-#        - purity:
-#            long: purity
-#            short: a
-#            value_name: FLOAT
-#            help: Purity of tumor sample [1.0].
+            default_value: "100"
+            help: Maximum number of (theoretical) reads to work with in the bulk background, in case the actual read count for a variant is higher (all read information will be used, but probabilities will only be computed for all discrete allele frequencies allowed by the maximum read count provided here). The code will work with any number above bulk-min-n, but we use the cap of the currently used Lodato amplification bias model for the single cell sample as the default.
 #        - heterozygosity:
 #            long: het
 #            value_name: FLOAT
-#            help: Expected heterozygosity of bulk sample (ignored if --flat-priors) [1.25E-4].
-        - adjust-mapq:
-            long: adjust-mapq
-            help: Downgrade mapping quality of alignments supporting an indel if there are no fragments supporting the same indel. Such cases are more likely to be alignment/repeat artifacts.
+#            default_value: "1.25E-4"
+#            help: Expected heterozygosity of bulk sample.
+        - prob-spurious-ins:
+            long: spurious-ins-rate
+            value_name: FLOAT
+            default_value: "2.8e-6"
+            help: "Rate of spuriously inserted bases by the sequencer (Illumina: 2.8e-6, see Schirmer et al. BMC Bioinformatics 2016)."
+        - prob-spurious-del:
+            long: spurious-del-rate
+            value_name: FLOAT
+            default_value: "5.1e-6"
+            help: "Rate of spuriosly deleted bases by the sequencer (Illumina: 5.1e-6, see Schirmer et al. BMC Bioinformatics 2016)."
+        - prob-ins-extend:
+            long: spurious-insext-rate
+            value_name: FLOAT
+            default_value: "0.0"
+            help: "Extension rate of spurious insertions by the sequencer (Illumina: 0.0, see Schirmer et al. BMC Bioinformatics 2016) [0.0]."
+        - prob-del-extend:
+            long: spurious-delext-rate
+            value_name: FLOAT
+            default_value: "0.0"
+            help: "Extension rate of spurious insertions by the sequencer (Illumina: 0.0, see Schirmer et al. BMC Bioinformatics 2016)."
         - pileup-window:
             long: pileup-window
             value_name: INT
-            help: Window to investigate for evidence left and right of each variant [2500].
+            default_value: "2500"
+            help: Window to investigate for evidence left and right of each variant.
         - omit-snvs:
             long: omit-snvs
             help: Don't call SNVs.
@@ -108,12 +108,6 @@ subcommands:
         - omit-fragment-evidence:
             long: omit-fragment-evidence
             help: Omit evidence consisting of read pairs with unexpected insert size (insert size parameters will be ignored).
-        - omit-secondary-alignments:
-            long: omit-secondary-alignments
-            help: Omit secondary alignments.
-        - omit-mapq:
-            long: omit-mapq
-            help: Omit mapping quality (all alignments are trusted).
         - observations:
             long: obs
             value_name: FILE
@@ -128,10 +122,11 @@ subcommands:
         - exclusive-end:
             long: exclusive-end
             help: Assume that the END tag is exclusive (i.e. it points to the position after the variant). This is needed, e.g., for DELLY.
-        - max-indel-overlap:
-            long: max-indel-overlap
+        - indel-window:
+            long: indel-window
             value_name: INT
-            help: When considering read evidence for an indel, omit alignments that overlap more than the given value. The default value ensures fair sampling of reads supporting alternative and reference allele. Choosing a too large overlap results in biases towards the reference allele, because of too low MAPQs and unmapped reads [25].
+            default_value: "100"
+            help: Number of bases to consider left and right of indel breakpoint when calculating read support. This number should not be too large in order to avoid biases caused by other close variants.
 
   - estimate-mutation-rate:
       about: Estimate the effective mutation rate of a tumor sample from a VCF/BCF with candidate variants from STDIN.
@@ -152,25 +147,17 @@ subcommands:
             help: Path to file that will contain observations and the parameters of the fitted model as JSON.
 
   - control-fdr:
-      about: Print thresholds for controlling the FDR at different levels based on posterior error probabilities.
+      about: Filter calls for controlling the false discovery rate (FDR) at given level.
       args:
         - calls:
             required: true
+            value_name: BCF
             help: Calls as provided by prosolo single-cell-bulk.
-        - method:
-            required: true
-            long: method
-            value_name: STRING
-            possible_values:
-              - bh
-              - ev
-            help: |
-              Method to use. If bh, use Benjamini-Hochberg over p-values generated from an empirical null distribution of posterior error probabilities (--null-calls is required in this case).
-              If ev, calculate the expected FDR over posterior error probabilities as presented by Mueller et al. 2006.
-        - null-calls:
-            value_name: FILE
-            long: null-calls
-            help: Null model calls as provided by prosolo single-cell-bulk, e.g. when flipping single cell and bulk sample.
+        - alpha:
+            long: fdr
+            short: a
+            default_value: "0.05"
+            help: FDR to control for.
         - events:
             required: true
             long: events
@@ -191,41 +178,8 @@ subcommands:
             long: max-len
             value_name: INT
             help: Maximum indel length to consider (exclusive).
-
-  - apply-fdr:
-      about: Apply thresholds for controlling the FDR as generated by `prosolo control-fdr`.
-      args:
-        - calls:
-            required: true
-            help: Calls as provided by prosolo single-cell-bulk.
-        - threshold:
-            required: true
-            long: threshold
-            short: t
-            value_name: FLOAT
-            help: Threshold to apply to the joint probability of the events specified
-        - events:
-            required: true
-            long: events
-            short: e
-            value_name: STRING(,STRING)*
-            use_delimiter: true
-            help: Comma-separated list of Events used for generating the threshold with `prosolo control-fdr` (e.g. `--events Event1,Event2`).
         - output:
             long: output
             short: o
             value_name: FILE
             help: BCF file that contains the filtered results (if omitted, write to STDOUT).
-        - vartype:
-            required: true
-            long: var
-            value_name: STRING
-            help: Variant type to filter (SNV, INS, DEL).
-        - min-len:
-            long: min-len
-            value_name: INT
-            help: Minimum indel length to consider.
-        - max-len:
-            long: max-len
-            value_name: INT
-            help: Maximum indel length to consider (exclusive).

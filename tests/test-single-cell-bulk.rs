@@ -16,8 +16,6 @@ fn test_simulated_omit_indels() {
         .arg("--candidates").arg(omit_indels_run.src_path("tests/candidates.bcf"))
 //        .arg("--obs").arg("observations_omit-indels.out")
         .arg("--output").arg("test-out_omit-indels.bcf")
-        .arg("--sc-isize-mean").arg("12")
-        .arg("--sc-isize-sd").arg("1")
         .arg(omit_indels_run.src_path("tests/single-cell.bam"))
         .arg(omit_indels_run.src_path("tests/bulk.bam"))
         .arg(omit_indels_run.src_path("tests/ref.fa"))
@@ -25,20 +23,6 @@ fn test_simulated_omit_indels() {
         .expect_success();
 //    omit_indels_run.expect_path("observations_omit-indels.out");
     omit_indels_run.expect_path("test-out_omit-indels.bcf");
-
-    // test that the defined Events cover the whole possible Event space
-    let out_str = String::from_utf8_lossy(&output.stdout);
-    let mut debug_iterator = out_str.lines();
-    let mut sum = 1.0;
-    let prob_re = Regex::new(r"Posterior probability: (0(.\d+)?)\.$").unwrap();
-    while let Some(line) = debug_iterator.next() {
-        if line.contains(" Posterior probability: ") {
-            sum += prob_re.captures(line).unwrap().get(1).unwrap().as_str().parse().unwrap();
-        } else if line.contains(" Case ") {
-            assert_eq!(sum, 1.0, "Posterior probabilities of defined Events don't add up to 1.0");
-            sum = 0.0;
-        }
-    }
 
     //test that the output BCF file is the same as before
     let bcf_path = omit_indels_run.src_path("tests/expected-out_omit-indels.bcf");
