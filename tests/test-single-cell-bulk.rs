@@ -2,14 +2,13 @@ extern crate cli_test_dir;
 extern crate regex;
 
 use cli_test_dir::*;
-use regex::Regex;
 use std::fs::File;
 use std::io::prelude::*;
 
 #[test]
 fn test_simulated_omit_indels() {
     let omit_indels_run = TestDir::new("prosolo", "simulated-omit-indels");
-    let output = omit_indels_run.cmd()
+    let _output = omit_indels_run.cmd()
         .arg("-v")
         .arg("single-cell-bulk")
         .arg("--omit-indels")
