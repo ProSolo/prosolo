@@ -4,7 +4,6 @@ version = "0.5.0"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-# libprosic = { git = "https://github.com/PROSIC/libprosic", rev = "607b3dc4f3f260e182985763385a0dbecee38e8a" }
 libprosic = "0.7"
 bio = "0.23"
 rust-htslib = "0.22"
