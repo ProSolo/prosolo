@@ -5,12 +5,12 @@ extern crate fern;
 extern crate clap;
 extern crate csv;
 extern crate itertools;
-extern crate time;
 extern crate serde_json;
+extern crate time;
 
+extern crate bio;
 extern crate libprosic;
 extern crate rust_htslib;
-extern crate bio;
 
 use std::process;
 
@@ -23,27 +23,34 @@ fn main() {
     // parse command line
     let yaml = load_yaml!("cli.yaml");
     let matches = App::from_yaml(yaml)
-                      .version(env!("CARGO_PKG_VERSION"))
-                      .get_matches();
+        .version(env!("CARGO_PKG_VERSION"))
+        .get_matches();
 
     // setup logger
     let logger_config = fern::DispatchConfig {
-        format: Box::new(|msg: &str, level: &log::LogLevel, _: &log::LogLocation| {
-          match level {
-              &log::LogLevel::Debug => format!("DEBUG[{}]: {}", time::now().strftime("%H:%M:%S").unwrap(), msg),
-              _ => msg.to_owned()
-          }
-        }),
+        format: Box::new(
+            |msg: &str, level: &log::LogLevel, _: &log::LogLocation| match level {
+                &log::LogLevel::Debug => format!(
+                    "DEBUG[{}]: {}",
+                    time::now().strftime("%H:%M:%S").unwrap(),
+                    msg
+                ),
+                _ => msg.to_owned(),
+            },
+        ),
         output: vec![fern::OutputConfig::stderr()],
         level: log::LogLevelFilter::Trace,
     };
     if let Err(e) = fern::init_global_logger(
         logger_config,
-        if matches.is_present("verbose") { log::LogLevelFilter::Debug } else { log::LogLevelFilter::Info }
+        if matches.is_present("verbose") {
+            log::LogLevelFilter::Debug
+        } else {
+            log::LogLevelFilter::Info
+        },
     ) {
         panic!("Failed to initialize logger: {}", e);
     }
-
 
     if let Some(matches) = matches.subcommand_matches("single-cell-bulk") {
         if let Err(e) = call::single_cell_bulk(matches) {
@@ -61,5 +68,4 @@ fn main() {
             process::exit(1);
         }
     }
-
 }

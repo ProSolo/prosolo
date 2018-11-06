@@ -1,16 +1,16 @@
-use std::io;
 use std::error::Error;
 use std::fs::File;
+use std::io;
 
-use serde_json;
+use bio::stats::{LogProb, Prob};
 use clap;
 use csv;
-use bio::stats::{Prob, LogProb};
+use serde_json;
 
 use libprosic;
-use libprosic::model::AlleleFreq;
 use libprosic::estimation;
 use libprosic::model;
+use libprosic::model::AlleleFreq;
 
 use call;
 
@@ -19,9 +19,12 @@ pub fn effective_mutation_rate(matches: &clap::ArgMatches) -> Result<(), Box<Err
     let max_af = value_t!(matches, "max-af", f64).unwrap_or(0.25);
     let mut reader = csv::Reader::from_reader(io::stdin());
     let freqs = try!(reader.decode().collect::<Result<Vec<f64>, _>>());
-    let estimate = estimation::effective_mutation_rate::estimate(freqs.into_iter().filter(|&f| {
-        f >= min_af && f <= max_af
-    }).map(|f| AlleleFreq(f)));
+    let estimate = estimation::effective_mutation_rate::estimate(
+        freqs
+            .into_iter()
+            .filter(|&f| f >= min_af && f <= max_af)
+            .map(|f| AlleleFreq(f)),
+    );
 
     // print estimated mutation rate to stdout
     println!("{}", estimate.effective_mutation_rate());
@@ -34,11 +37,9 @@ pub fn effective_mutation_rate(matches: &clap::ArgMatches) -> Result<(), Box<Err
     Ok(())
 }
 
-
 struct DummyEvent {
-    pub name: String
+    pub name: String,
 }
-
 
 impl libprosic::Event for DummyEvent {
     fn name(&self) -> &str {
@@ -46,25 +47,31 @@ impl libprosic::Event for DummyEvent {
     }
 }
 
-
 /// Parse `VariantType` from command line arguments.
-pub fn parse_vartype(vartype: &str, min_len: Option<u32>, max_len: Option<u32>) -> Result<model::VariantType, Box<Error>> {
+pub fn parse_vartype(
+    vartype: &str,
+    min_len: Option<u32>,
+    max_len: Option<u32>,
+) -> Result<model::VariantType, Box<Error>> {
     Ok(match (vartype, min_len, max_len) {
         ("SNV", _, _) => model::VariantType::SNV,
-        ("INS", Some(min_len), Some(max_len)) => model::VariantType::Insertion(Some(min_len..max_len)),
-        ("DEL", Some(min_len), Some(max_len)) => model::VariantType::Deletion(Some(min_len..max_len)),
+        ("INS", Some(min_len), Some(max_len)) => {
+            model::VariantType::Insertion(Some(min_len..max_len))
+        }
+        ("DEL", Some(min_len), Some(max_len)) => {
+            model::VariantType::Deletion(Some(min_len..max_len))
+        }
         ("INS", _, _) => model::VariantType::Insertion(None),
         ("DEL", _, _) => model::VariantType::Deletion(None),
         _ => {
             return Err(Box::new(clap::Error {
                 message: "unsupported variant type (supported: SNV, INS, DEL)".to_owned(),
                 kind: clap::ErrorKind::InvalidValue,
-                info: None
+                info: None,
             }));
         }
     })
 }
-
 
 pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let call_bcf = matches.value_of("calls").unwrap();
@@ -75,18 +82,15 @@ pub fn fdr(matches: &clap::ArgMatches) -> Result<(), Box<Error>> {
     let max_len = value_t!(matches, "max-len", u32).ok();
     let vartype = parse_vartype(vartype, min_len, max_len)?;
 
-    let events: Vec<DummyEvent> = events_list.map(|ev| DummyEvent { name: ev.to_owned() }).collect();
+    let events: Vec<DummyEvent> = events_list
+        .map(|ev| DummyEvent {
+            name: ev.to_owned(),
+        }).collect();
     let alpha = LogProb::from(Prob::checked(alpha)?);
 
     let out = call::path_or_pipe(matches.value_of("output"));
 
-    estimation::fdr::ev::control_fdr::<_, _, &str>(
-        call_bcf,
-        out,
-        &events,
-        &vartype,
-        alpha,
-        )?;
+    estimation::fdr::ev::control_fdr::<_, _, &str>(call_bcf, out, &events, &vartype, alpha)?;
 
     Ok(())
 }
