@@ -71,5 +71,5 @@ Affiliations during work on the project:
 
 * [Life Sciences and Health group](https://www.cwi.nl/research/groups/life-sciences-and-health), Centrum Wiskunde & Informatica, Amsterdam, The Netherlands: Louis Dijkstra, Johannes Köster, Alexander Schönhuth
 * [Computational Biology of Infection Research Group](https://www.helmholtz-hzi.de/en/research/research_topics/bacterial_and_viral_pathogens/computational_biology_of_infection_research/our_research/), Helmholtz Centre for Infection Research, Braunschweig, Germany: David Lähnemann, Alice McHardy
-* [Algorithms for reproducible bioinformatics lab](https://koesterlab.github.io/), Institute of Human Genetics, University Hospital Essen, University of Duisburg-Essen, Germany: Johannes Köster
+* [Algorithms for reproducible bioinformatics lab](https://koesterlab.github.io/), Institute of Human Genetics, University Hospital Essen, University of Duisburg-Essen, Germany: Johannes Köster, David Lähnemann
 * [Department of Pediatric Oncology, Hematology, and Clinical Immunology](https://www.uniklinik-duesseldorf.de/en/unternehmen/kliniken/department-of-paediatric-oncology-haematology-and-immunology/), University Children’s Hospital, Medical Faculty, Heinrich Heine University, Düsseldorf, Germany: David Lähnemann
