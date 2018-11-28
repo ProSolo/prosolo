@@ -1,5 +1,4 @@
 extern crate cli_test_dir;
-extern crate regex;
 
 use cli_test_dir::*;
 use std::fs::File;
