@@ -1,10 +1,10 @@
 [package]
 name = "prosolo"
-version = "0.6.0"
+version = "0.6.1"
 authors = ["David Laehnemann <david.laehnemann@hhu.de>"]
 
 [dependencies]
-libprosic = "0.7.2"
+libprosic = "0.7.3"
 clap = {version = "2.24.*", features = ["yaml", "color", "suggestions"]}
 rust-htslib = "0.22"
 bio = "0.24"
