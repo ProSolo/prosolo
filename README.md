@@ -5,7 +5,7 @@
 
 ProSolo is a variant caller for single cell data from whole genome amplification with multiple displacement amplification (MDA). It relies on a pair of samples, where one is from an MDA single cell and the other from a bulk sample of the same cell population, sequenced with any next-generation sequencing technology.
 
-It uses an extension of the novel latent variable model of [libprosic](https://github.com/PROSIC/libprosic), that already integrates various levels of uncertainty. It adds a layer that accounts for amplification biases (and errors) of MDA, and thereby allows to properly asses the probability of having a variant in the MDA single cell.
+It uses an extension of the novel latent variable model of [Varlociraptor](https://github.com/varlociraptor/varlociraptor), that already integrates various levels of uncertainty. It adds a layer that accounts for amplification biases (and errors) of MDA, and thereby allows to properly asses the probability of having a variant in the MDA single cell.
 
 In the future, ProSolo will also implement indel calling, but currently, only the the `single-cell-bulk` subcommand with the `--omit-indels` flag is recommended.
 
@@ -13,9 +13,14 @@ In the future, ProSolo will also implement indel calling, but currently, only th
 
 ProSolo is available via [Bioconda](https://bioconda.github.io), a distribution of bioinformatics software for the conda package manager.
 [Bioconda can be set up](https://bioconda.github.io/#using-bioconda) in any Linux environment, even without admin rights.
-With [Bioconda set up](https://bioconda.github.io/#using-bioconda), ProSolo can be installed via
+With [Bioconda set up](https://bioconda.github.io/#using-bioconda), ProSolo can be installed into a dedicated conda environment via
 
-	$ conda install prosolo
+    $ conda create -n prosolo prosolo
+
+
+To then use it, you only need to activate its environment with
+
+    $ conda activate prosolo
 
 ## Usage
 
@@ -26,13 +31,21 @@ For general usage, please issue `prosolo --help` on the command line. Help is al
 To try out calling command syntax, please use the test data in the repo folder `tests/` as follows:
 ```
 prosolo single-cell-bulk \
-		--omit-indels \
+    --omit-indels \
     --candidates tests/candidates.bcf \
     --output test-out_omit-indels.bcf \
     tests/single-cell.bam \
     tests/bulk.bam \
     tests/ref.fa
 ```
+As input, you always need:
+
+1. Aligned reads of a single cell sample, in position sorted BAM or SAM format.
+2. Aligned reads from a background bulk sample, in position sorted BAM or SAM format.
+3. The reference FASTA file used in the alignment.
+4. A file specifying which genomic sites to call and what possible alternative alleles to look at. This can be any VCF or BCF file, e.g. produced by `freebayes` or `samtools mpileup`.
+
+If you want to parallelize variant calling, you can parallelize over genomic regions. Simply split your `--candidates` files into non-overlapping regions or even already parallelize the candidate file generation over genomic regions.
 
 ### Controlling the false discovery rate
 
@@ -43,23 +56,25 @@ prosolo control-fdr \
     --events ADO_TO_REF,ADO_TO_ALT \
     --var SNV \
     --fdr 0.04
-		--output ADO_fdr_0-04.bcf
+    --output ADO_fdr_0-04.bcf
 ```
 In this case, we are jointly controlling the FDR for all `Events` that are allele dropouts in the single cell sample. For this set of `Events`, the above command will print a BCF file with all the entries with an estimated false discovery rate below `0.04`.
+
+However, you can control the false discovery rate for any combination of events. The output of the `prosolo single-cell-bulk` command will always contain a `PROB_` field for every possible single cell event, and you can simply name the `Events` you jointly care about by omitting this prefix. E.g. to control the false discovery rate of the presence of an alternative allele, you would use `--events HET,HOM_ALT,ADO_TO_ALT,ADO_TO_REF,ERR_REF` to control for all the single cell events that imply the presence of an alternative allele.
 
 
 ## Authors
 
 ### Model
 
-* [Johannes Köster](https://github.com/johanneskoester), [Louis Dijkstra](https://github.com/louisdijkstra) (see [libprosic](https://github.com/prosic/libprosic))
+* [Johannes Köster](https://github.com/johanneskoester), [Louis Dijkstra](https://github.com/louisdijkstra) (see [varlociraptor](https://github.com/varlociraptor/varlociraptor))
 * [David Lähnemann](https://github.com/dlaehnemann) (single cell whole genome amplification model, single cell & bulk joint calling model / event setup)
 * [Alexander Schönhuth](https://github.com/aschoen) (latent variable model, single cell whole genome amplification model, single cell & bulk joint calling model / event setup)
 
 ### Implementation
 
-* [Johannes Köster](https://github.com/johanneskoester) (see [libprosic](https://github.com/prosic/libprosic))
-* [David Lähnemann](https://github.com/dlaehnemann) (see [libprosic](https://github.com/prosic/libprosic), all the implementation of the ProSolo CLI, originally based on the [prosic2 CLI](https://github.com/PROSIC/prosic2))
+* [Johannes Köster](https://github.com/johanneskoester) (see [varlociraptor](https://github.com/varlociraptor/varlociraptor))
+* [David Lähnemann](https://github.com/dlaehnemann) (see [varlociraptor](https://github.com/varlociraptor/varlociraptor), all the implementation of the ProSolo CLI, originally based on the [prosic2 CLI](https://github.com/PROSIC/prosic2))
 
 ### Supervision
 
