@@ -12,8 +12,8 @@ In the future, ProSolo will also implement indel calling, but currently, only th
 ## Installation
 
 ProSolo is available via [Bioconda](https://bioconda.github.io), a distribution of bioinformatics software for the conda package manager.
-[Bioconda can be set up](https://bioconda.github.io/#using-bioconda) in any Linux environment, even without admin rights.
-With [Bioconda set up](https://bioconda.github.io/#using-bioconda), ProSolo can be installed into a dedicated conda environment via
+[Bioconda can be set up](https://bioconda.github.io/user/install.html) in any Linux environment, even without admin rights.
+With [Bioconda set up](https://bioconda.github.io/user/install.html), ProSolo can be installed into a dedicated conda environment via
 
     $ conda create -n prosolo prosolo
 
