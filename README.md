@@ -62,6 +62,9 @@ In this case, we are jointly controlling the FDR for all `Events` that are allel
 
 However, you can control the false discovery rate for any combination of events. The output of the `prosolo single-cell-bulk` command will always contain a `PROB_` field for every possible single cell event, and you can simply name the `Events` you jointly care about by omitting this prefix. E.g. to control the false discovery rate of the presence of an alternative allele, you would use `--events HET,HOM_ALT,ADO_TO_ALT,ADO_TO_REF,ERR_REF` to control for all the single cell events that imply the presence of an alternative allele.
 
+### Using ProSolo in a pipeline
+
+For systematic analyses of multiple single cell samples, we recommend using the [Snakemake workflow management system](https://snakemake.readthedocs.io/en/latest/). To make setting up your own ProSolo workflow as easy as possible, we have created Snakemake wrappers for ProSolo's two subcommands, [`prosolo single-cell-bulk`](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/prosolo/single-cell-bulk.html) and [`prosolo control-fdr`](https://snakemake-wrappers.readthedocs.io/en/stable/wrappers/prosolo/control-fdr.html). For general usage of Snakemake wrappers, see the [Snakemake wrappers documentation](https://snakemake-wrappers.readthedocs.io/en/stable/index.html). And also have a look around for other wrappers: for most tools that you might need for preprocessing ProSolo input or for working with ProSolo results, there should already be Snakemake wrappers that are easy to integrate into a Snakemake pipeline.
 
 ## Authors
 
