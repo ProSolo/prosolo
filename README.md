@@ -2,7 +2,7 @@
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/prosolo/README.html)
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/prosolo/badges/downloads.svg)](http://bioconda.github.io/recipes/prosolo/README.html)
-[![Zenodo DOI](https://zenodo.org/badge/80540962.svg)](https://zenodo.org/badge/latestdoi/80540962)
+[![Zenodo DOI](https://zenodo.org/badge/80540962.svg)](https://doi.org/10.5281/zenodo.5366554)
 
 
 
