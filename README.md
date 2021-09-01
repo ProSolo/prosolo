@@ -2,6 +2,9 @@
 
 [![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/prosolo/README.html)
 [![Anaconda-Server Badge](https://anaconda.org/bioconda/prosolo/badges/downloads.svg)](http://bioconda.github.io/recipes/prosolo/README.html)
+[![Zenodo DOI](https://zenodo.org/badge/80540962.svg)](https://zenodo.org/badge/latestdoi/80540962)
+
+
 
 ProSolo is a variant caller for multiple displacement amplified DNA sequencing data from diploid single cells. It relies on a pair of samples, where one is from an MDA single cell and the other from a bulk sample of the same cell population, sequenced with any next-generation sequencing technology.
 
